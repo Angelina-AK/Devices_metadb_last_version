@@ -1,0 +1,32 @@
+{% extends 'indexleo.html' %}
+
+{% block page_title %} Create device {% endblock %}
+
+{% block content %}
+
+<form method="post" class="card p-4 max-w-2xl">
+
+    <div class="mb-3 flex h-8 items-center justify-between">
+        <h2 class="font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100 lg:text-base">
+            Create device
+        </h2>
+    </div>
+
+    <label class="block">
+        <span>Device name:</span>
+        <input
+        class="form-input w-full mt-1.5 rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+        placeholder="Device name"
+        autocomplete="off"
+        type="text"
+        name="name"
+        value="{{ request.form['name'] }}"
+        />
+    </label>
+
+    
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary px-3 py-2 mt-3">Submit</button>
+    </div>
+</form>
+{% endblock %}

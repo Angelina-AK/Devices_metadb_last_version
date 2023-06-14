@@ -1,0 +1,38 @@
+{% extends 'types/type_create.html' %}
+
+{% block page_title %} Type edit {% endblock %} 
+
+{% block form_title %}
+    Type editing
+{% endblock %}
+
+{% block form_action %} {{ url_for('object_api.type_edit', id=type.id) }} {% endblock%}
+
+{%- block type_name -%} {{type.type_name}} {%- endblock -%}
+
+{%block current_atrs %}
+    {% for atr in attributes %}
+        <div class="mt-3" id="input-wrapper">
+            <label class="block">
+                <span>Current attribute:</span>
+                <div class="flex items-center">
+                    <input
+                        class="form-input w-full mt-1.5 disabled:bg-pink-400/40 disabled:placeholder:text-slate-800 disabled:text-slate-800 rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                        autocomplete="off"
+                        type="text"
+                        name="attribute"
+                        value="{{atr}}"
+                    />
+                    <div class="px-2 py-3 cursor-pointer">x</div>
+                </div>
+            </label>
+        </div>
+    {% endfor %}   
+{% endblock %}
+    
+{% block button_tetx%} Save {% endblock %}
+
+{% block js %} 
+    {{ super() }}
+    <script type="module" src="{{ url_for('.static', filename='js/types/type_editing.js') }}"></script>
+{% endblock %}

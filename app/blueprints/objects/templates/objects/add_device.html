@@ -1,0 +1,50 @@
+{% extends 'newbase.html' %}
+
+
+{% block content %}
+    <h1>{% block title %} Adding device {% endblock %}</h1>
+
+    <div class="col-md-6 col-12 mt-2">
+        <div class="card">
+            <div class="card-body">
+
+                {% if e is defined %}
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">ERROR</h4>
+                        <div class="alert-body">
+                            {{e}}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <form method="post" class="form form-horizontal" 
+                action= "{{ id }}">
+                    <div class="row">
+                        
+                        <div class="row col-12 mb-1">
+                            <div class="col-sm-3 ">
+                                <label class="col-form-label" for="browser-devices">Select device </label>
+                            </div>
+                            <div class="col-sm-9">
+                                <input class="form-control" list="browser-devices" name="device" autocomplete="off" 
+                                placeholder="{% if devices != [] %} Devices {% else %} Not have available devices {% endif %}" />
+                            </div>
+
+                            <datalist id="browser-devices">
+                                    {% for device in devices %}
+                                        <option value="{{ device.name }}">
+                                    {% endfor %}
+                            </datalist>
+                        </div>
+                        
+                        <div class="d-flex flex-column align-items-center">
+                            <button type="submit" class="mx-auto btn btn-warning waves-effect waves-float waves-light" id="submit-btn">Add device</button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+   
+{% endblock %}

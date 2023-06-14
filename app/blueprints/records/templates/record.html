@@ -1,0 +1,43 @@
+{% extends 'indexleo.html' %}
+
+{% block content %}
+  <div class="card px-4 py-4 sm:px-5">
+    <div>
+      <h2 class="text-lg font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100">
+        Device: {{ payload.device.name }}
+      </h2>
+    </div>
+    <div class="pt-2">
+      <p>
+        RAW:   {{ payload.value}}
+      </p>
+
+      <div class="my-4 h-px  bg-slate-200 dark:bg-navy-500"></div>
+
+      <p>
+        SERVER DECODE:  {{ decoded }}
+      </p>
+
+      <div class="my-4 h-px  bg-slate-200 dark:bg-navy-500"></div>
+
+      <p id="decode">
+        CLIENT DECODE:
+      </p>
+
+      <div class="my-4 h-px  bg-slate-200 dark:bg-navy-500"></div>
+
+      <p>
+        DATE:   {{ payload['created'] | datetime_user_tz }}
+      </p>
+    </div>
+  </div>
+
+
+  <script>
+    {{decoder_format.value|safe}}
+     
+     str = JSON.stringify(decoder({{payload.value|safe}}), null, 4);
+     document.querySelector('#decode').textContent += str;
+   </script>
+{% endblock %}
+

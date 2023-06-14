@@ -1,0 +1,104 @@
+{%- extends 'objects/object_create.html' -%}
+
+{%- block page_title -%} Edit object {%- endblock -%} 
+
+
+{%- block form_title -%}
+  Edit object
+{%- endblock -%}
+
+{%- block form_action -%} {{ url_for('object_api.object_edit', id=obj.id ) }} {%- endblock -%}
+{%- block object_id -%} {{obj.id}} {%- endblock -%}
+
+{%- block object_name -%}{{obj.name}}"{%- endblock -%}
+
+{%- block type_name -%}{{obj.object_type.type_name or ''}}{%- endblock -%}
+
+{%- block attributes -%} 
+    {%- if attributes_values -%}
+      {%- for atr_val in attributes_values -%}
+        <div class="mb-1 row">
+          <div class="col-sm-3 ">
+            <label class="col-form-label" for="attribute">{{atr_val['atr_name']}}</label>
+          </div>
+        
+          <div class="col-sm-9">
+              <input class="form-control" name="attr-{{ atr_val['atr_name'] }}" placeholder="Set value" value="{{ atr_val['value'] }}">
+          </div>
+        </div>
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endblock -%}
+
+
+  {%- block parent_objects -%}
+    <datalist id="browsers-obj">
+      {%- for pp in possible_parents -%}
+          <option value="{{pp}}">
+      {%- endfor -%}
+    </datalist>
+
+    {%- if current_parents == []-%}
+      <label class="block mt-3">
+        <span>Parent:</span>
+        <div class="flex">
+            <input
+            class="form-input w-full disabled-input mt-1.5 rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+            placeholder="Parent name"
+            autocomplete="off"
+            type="text"
+            name="parent-obj"
+            list="browsers-obj"
+            />
+            <div class="disable-div-x">x</div>
+        </div>
+     </label>
+    {%- else -%}
+      {%- for cp in current_parents -%}
+        <label class="block mt-3">
+          <span>Parent:</span>
+          <div class="flex">
+              <input
+              class="form-input w-full disabled-input mt-1.5 rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+              placeholder="Parent name"
+              autocomplete="off"
+              type="text"
+              value="{{cp}}"
+              name="parent-obj"
+              list="browsers-obj"
+              />
+              <div class="disable-div-x">x</div>
+          </div>
+        </label>
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endblock -%}
+
+
+  {%- block child_objects -%} 
+    {%- if childs != [] -%}
+      {%- for c in childs -%}
+        <label class="block mt-3">
+          <span>Child:</span>
+          <div class="flex">
+              <input
+              class="form-input w-full disabled-input mt-1.5 rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+              placeholder="Child object"
+              autocomplete="off"
+              type="text"
+              value="{{c}}"
+              name="current-child"
+              />
+              <div class="disable-div-x">x</div>
+          </div>
+        </label>
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endblock -%}
+
+
+{%- block btn_text -%} Save {%- endblock -%}
+
+{%- block js -%} 
+  <script type="module" src="{{url_for('.static', filename='js/objects/object_editing.js')}}"></script>
+{%- endblock -%}

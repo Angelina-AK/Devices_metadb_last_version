@@ -1,0 +1,110 @@
+{% extends 'indexleo.html' %}
+
+{% block page_title %} Create new object {% endblock %}
+
+
+{% block content %}
+    <form  method="post" class="card p-4 max-w-2xl" 
+            action="{%- block form_action -%} {{ url_for('object_api.object_create') }} {%- endblock -%}"
+            id="{% block object_id %}{% endblock %}"  
+    >
+
+        <div class="mb-3 flex h-8 items-center justify-between">
+            <h2 class="font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100 lg:text-base">
+            {% block form_title %}
+                Create object
+            {% endblock %}
+            </h2>
+        </div>
+
+        {% if e is defined %}
+            <div class="rounded-lg  bg-error px-3 py-2 mb-2 text-white sm:px-5">
+                <div>
+                    <h2 class="text-base font-medium tracking-wide line-clamp-1">
+                        ERROR
+                    </h2>
+                </div>
+                <div class="pt-2">
+                    <p>
+                        {{e}}
+                    </p>
+                </div>
+            </div>
+        {% endif %}
+
+        <div id="form-inputs-wrapper">
+                <label class="block">
+                    <span>Object:</span>
+                    <input
+                    class="form-input w-full mt-1.5 rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                    placeholder="Object name"
+                    autocomplete="off"
+                    type="text"
+                    name="name"
+                    value="{% block object_name %}{% endblock %}"
+                    />
+                </label>
+
+            <div class="mt-3" id="type-wrapper">
+                <label class="block">
+                    <span>Type:</span>
+                    <div class="flex">
+                        <input
+                        class="form-input w-full mt-1.5 disabled-input rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                        placeholder="Type name"
+                        autocomplete="off"
+                        type="text"
+                        name="type"
+                        list="browsers-types"
+                        value="{% block type_name %}{% endblock %}"
+                        id="type-input"
+                        />
+                        <div class="disable-div-x">x</div>
+                        <datalist id="browsers-types">
+                        </datalist>
+                    </div>
+                </label>
+            </div>
+
+            <div class="mt-3">
+                <div class="" id="attrs-wrapper">
+                </div>
+            </div>
+
+            {% block current_atrs %} {% endblock %}
+
+            {% block parent_objects %}
+                <label class="block mt-3">
+                    <span>Parent:</span>
+                    <div class="flex">
+                        <input
+                        class="form-input w-full disabled-input mt-1.5 rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                        placeholder="Parent name"
+                        autocomplete="off"
+                        type="text"
+                        name="parent-obj"
+                        list="browsers-obj"
+                        />
+                        <div class="disable-div-x">x</div>
+                        <datalist id="browsers-obj">
+                            {% for p in parents %}
+                                <option value="{{p}}">
+                            {% endfor %}
+                        </datalist>
+                    </div>
+                </label>
+            {% endblock %}
+
+            {% block child_objects %} {% endblock %}
+        </div>
+            
+        <div class="flex flex-col items-center mt-3" id="top-level-wrapper">
+            <span class="btn btn-primary px-3 py-2 mb-2" id="add-object">Add child object</span>
+            <button type="submit" class="btn btn-primary px-3 py-2" id="submit-btn"> {% block btn_text %} Create {% endblock %}</button>
+        </div>
+    </form>
+{% endblock %}
+
+{% block js %}
+    <script type="module" src="{{url_for('.static', filename='js/objects/object_creating.js')}}"></script>
+{% endblock %}

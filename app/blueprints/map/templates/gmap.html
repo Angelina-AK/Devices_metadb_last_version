@@ -1,0 +1,59 @@
+{% extends 'indexleo.html' %}
+
+{% block css %}
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@latest/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css" />
+
+  <style type="text/css">
+    
+    .map {
+      height: 500px;
+    }
+
+  </style>
+
+{% endblock %}
+
+{% block content %}
+
+  <div class="map" id="mymap"></div>
+
+{% endblock %}
+
+
+{% block js %}
+  <script src="https://unpkg.com/leaflet@latest/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script>
+
+  <script>
+    
+    const tiles = L.tileLayer(
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      {
+        maxZoom: 30,
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }
+    );
+
+    const map = L.map('mymap').setView([51.505, -0.09], 13).addLayer(tiles);
+
+    map.pm.addControls({
+      drawMarker: true,
+      drawPolygon: true,
+      editMode: true,
+      removalMode: true,
+      drawPolyline: true,
+    });
+
+    map.pm.addControls({
+      drawMarker: true,
+      drawPolygon: true,
+      editMode: true,
+      removalMode: true,
+      drawPolyline: true,
+    });
+
+  </script>
+{% endblock %}

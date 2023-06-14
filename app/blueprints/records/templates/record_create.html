@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %} Create a New Record {% endblock %}</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label for="title">Device id</label>
+        <input type="text" name="device_id"
+               placeholder="Device id" class="form-control"
+               value="{{ request.form['device_id'] }}"></input>
+    </div>
+     <div class="form-group">
+            <label for="title">Name</label>
+            <input type="text" name="name"
+                   placeholder="Name" class="form-control"
+                   value="{{ request.form['name'] }}"></input>
+     </div>
+    <div class="form-group">
+        <label for="content">Value</label>
+        <input type="text" name="value"
+               placeholder="value id" class="form-control"
+               value="{{ request.form['value'] }}"></input>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,46 @@
+diff a/app/templates/visuals/chartallnew.html b/app/templates/visuals/chartallnew.html	(rejected hunks)
+@@ -41,35 +41,6 @@
+  
+ }
+ 
+-.n7 {
+-    background-color: #28dac6; 
+-}
+-   
+-.n8 {
+-  background-color: #ffe802; 
+- 
+-}
+-   
+-.n9 {
+-  background-color: #FDAC34; 
+- 
+-}
+-
+-.n10 {
+-  background-color: #299AFF; 
+- 
+-}
+-
+-.n11 {
+-  background-color: #4F5D70; 
+-
+-
+-}
+-
+-.n12 {
+-  background-color: #2c9aff; 
+- 
+-}
+ 
+ </style>
+ 
+@@ -251,7 +222,7 @@
+     <!-- END: Page JS-->
+ 
+ <script>
+-    
++
+ 
+ var dt_basic_table = $('.datatables-basic'),
+     dt_date_table = $('.dt-date'),

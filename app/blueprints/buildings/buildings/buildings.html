@@ -1,0 +1,22 @@
+{% extends 'newbase.html' %}
+
+{% block content %}
+
+    {% for building in buildings %}
+        <a href = "{{ url_for('buildings_api.building_view', id=building['id']) }}">
+            <h2>{{ building['name'] }}</h2>
+        </a>
+        <span class="badge badge-primary">{{ building['updated'] | datetime_user_tz }}</span>
+        <a href="{{ url_for('buildings_api.building_edit', id=building['id']) }}">
+            <span class="badge badge-warning">Edit</span>
+        </a>
+        <hr>
+    {% endfor %}
+<a href = "{{url_for('buildings_api.building_create')}}">
+            Add new
+        </a>
+
+        <hr>
+{% endblock %}
+
+

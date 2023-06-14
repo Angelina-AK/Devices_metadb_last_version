@@ -1,0 +1,102 @@
+{% extends 'indexleo.html' %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+  <input type="text" value="{{device_id}}" id="device_id" hidden>
+  
+  <div class="grid grid-cols-1 gap-4">
+
+    {% for sensor in sensors %}
+      <div class="grid grid-cols-6 gap-4">
+
+        <div class="card px-4 pb-4 col-span-5 dark:shadow dark:shadow-blue-500/40 max-h-max">
+          <div class="mt-3  h-8 items-center justify-between">
+              <h2 class="font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100 lg:text-base">
+                {{sensor['name']}}
+              </h2>
+          </div>
+          <div class="">
+              <div class="mt-2">
+                  <div>
+                      <div class="flex w-full h-full" id="myAreaChart{{sensor['id']}}" data-sensor="{{sensor['decode_key']}}">
+
+                      </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-2 content-between" id="{{sensor['id']}}" data-decodekey="{{sensor['decode_key']}}">
+
+          <div class="card px-4 py-4 sm:px-5 h-max">
+            <div>
+              <h2 class="text-base font-medium tracking-wide text-cyan-400 line-clamp-1">
+                  Текущее
+              </h2>
+            </div>
+            <div class="pt-2">
+              <p id="now{{sensor['id']}}">
+                
+              </p>
+            </div>
+          </div>
+
+          <div class="card px-4 py-4 sm:px-5 h-max">
+            <div>
+              <h2 class="text-base font-medium tracking-wide text-orange-400 line-clamp-1">
+                Среднее
+              </h2>
+            </div>
+            <div class="pt-2">
+              <p id="average{{sensor['id']}}">
+                
+              </p>
+            </div>
+          </div>
+
+          <div class="card px-4 py-4 sm:px-5 h-max">
+            <div>
+              <h2 class="text-base font-medium tracking-wide text-rose-400 line-clamp-1">
+                MAX
+              </h2>
+            </div>
+            <div class="pt-2">
+              <p id="max{{sensor['id']}}">
+                
+              </p>
+            </div>
+          </div>
+
+          <div class="card px-4 py-4 sm:px-5 h-max">
+            <div>
+              <h2 class="text-base font-medium tracking-wide text-teal-400 line-clamp-1">
+                MIN
+              </h2>
+            </div>
+            <div class="pt-2">
+              <p id="min{{sensor['id']}}">
+               
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+  
+    {% endfor %}
+  </div>
+  
+{% endblock %}
+
+{% block js %}
+<script src="{{url_for('visual_api.static', filename='js/chart_all.js')}}" defer></script>
+
+<script>
+  {{ decoder_format.value | safe }}
+</script>
+
+{% endblock %}

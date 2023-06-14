@@ -1,0 +1,9 @@
+image: node:6
+clone:
+  depth: full
+pipelines:
+  branches:
+    master:
+      - step:
+          script:
+            - git push -f https://heroku:900b16c5-19b4-4992-adf0-5f28f0d32f12@git.heroku.com/iotboard.git master

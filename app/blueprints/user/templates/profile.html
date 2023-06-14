@@ -1,0 +1,517 @@
+{% extends 'newbase.html' %}
+
+{% block content %}
+
+    <!-- Content Row -->
+                    <div class="row">
+
+                     <div class="col-lg-6 mb-4">
+		<!-- Approach -->
+		<div class="card shadow mb-4">
+			<div class="card-header py-3">
+				<h6 class="m-0 font-weight-bold text-primary">Основная информация</h6> </div>
+			<div class="card-body">
+				<form method="post">
+					<div class="form-group">
+						<label for="name">username</label>
+						<input type="text" name="username" placeholder="User name" class="form-control" value="{{ request.form['name'] or user['username'] }}"> </input>
+					</div>
+					<div class="form-group">
+						<label for="content">email</label>
+						<input type="text" name="email" placeholder="email" class="form-control" value="{{ request.form['key'] or user['email'] }}"> </input>
+					</div>
+					<div class="form-group">
+						<label for="content">timezone</label>
+					<select  id = "timezone" name="timezone" class="form-control">
+
+</select>
+					</div>
+					<div class="form-group">
+						<button type="submit" class="btn btn-primary">Save</button>
+					</div>
+				</form>
+
+			</div>
+		</div>
+	</div>
+
+
+                    </div>
+
+<script>
+var africa = [
+{value:"Africa/Abidjan", label:"(+00:00 UTC) Abidjan"},
+{value:"Africa/Accra", label:"(+00:00 UTC) Accra"},
+{value:"Africa/Bamako", label:"(+00:00 UTC) Bamako"},
+{value:"Africa/Banjul", label:"(+00:00 UTC) Banjul"},
+{value:"Africa/Bissau", label:"(+00:00 UTC) Bissau"},
+{value:"Africa/Conakry", label:"(+00:00 UTC) Conakry"},
+{value:"Africa/Dakar", label:"(+00:00 UTC) Dakar"},
+{value:"Africa/Freetown", label:"(+00:00 UTC) Freetown"},
+{value:"Africa/Lome", label:"(+00:00 UTC) Lome"},
+{value:"Africa/Monrovia", label:"(+00:00 UTC) Monrovia"},
+{value:"Africa/Nouakchott", label:"(+00:00 UTC) Nouakchott"},
+{value:"Africa/Ouagadougou", label:"(+00:00 UTC) Ouagadougou"},
+{value:"Africa/Sao_Tome", label:"(+00:00 UTC) Sao Tome"},
+{value:"Africa/Algiers", label:"(+01:00 UTC) Algiers"},
+{value:"Africa/Bangui", label:"(+01:00 UTC) Bangui"},
+{value:"Africa/Brazzaville", label:"(+01:00 UTC) Brazzaville"},
+{value:"Africa/Casablanca", label:"(+01:00 UTC) Casablanca"},
+{value:"Africa/Douala", label:"(+01:00 UTC) Douala"},
+{value:"Africa/El_Aaiun", label:"(+01:00 UTC) El Aaiun"},
+{value:"Africa/Kinshasa", label:"(+01:00 UTC) Kinshasa"},
+{value:"Africa/Lagos", label:"(+01:00 UTC) Lagos"},
+{value:"Africa/Libreville", label:"(+01:00 UTC) Libreville"},
+{value:"Africa/Luanda", label:"(+01:00 UTC) Luanda"},
+{value:"Africa/Malabo", label:"(+01:00 UTC) Malabo"},
+{value:"Africa/Ndjamena", label:"(+01:00 UTC) Ndjamena"},
+{value:"Africa/Niamey", label:"(+01:00 UTC) Niamey"},
+{value:"Africa/Porto-Novo", label:"(+01:00 UTC) Porto-Novo"},
+{value:"Africa/Tunis", label:"(+01:00 UTC) Tunis"},
+{value:"Africa/Windhoek", label:"(+01:00 UTC) Windhoek"},
+{value:"Africa/Blantyre", label:"(+02:00 UTC) Blantyre"},
+{value:"Africa/Bujumbura", label:"(+02:00 UTC) Bujumbura"},
+{value:"Africa/Cairo", label:"(+02:00 UTC) Cairo"},
+{value:"Africa/Ceuta", label:"(+02:00 UTC) Ceuta"},
+{value:"Africa/Gaborone", label:"(+02:00 UTC) Gaborone"},
+{value:"Africa/Harare", label:"(+02:00 UTC) Harare"},
+{value:"Africa/Johannesburg", label:"(+02:00 UTC) Johannesburg"},
+{value:"Africa/Kigali", label:"(+02:00 UTC) Kigali"},
+{value:"Africa/Lubumbashi", label:"(+02:00 UTC) Lubumbashi"},
+{value:"Africa/Lusaka", label:"(+02:00 UTC) Lusaka"},
+{value:"Africa/Maputo", label:"(+02:00 UTC) Maputo"},
+{value:"Africa/Maseru", label:"(+02:00 UTC) Maseru"},
+{value:"Africa/Mbabane", label:"(+02:00 UTC) Mbabane"},
+{value:"Africa/Tripoli", label:"(+02:00 UTC) Tripoli"},
+{value:"Africa/Addis_Ababa", label:"(+03:00 UTC) Addis Ababa"},
+{value:"Africa/Asmara", label:"(+03:00 UTC) Asmara"},
+{value:"Africa/Dar_es_Salaam", label:"(+03:00 UTC) Dar es Salaam"},
+{value:"Africa/Djibouti", label:"(+03:00 UTC) Djibouti"},
+{value:"Africa/Juba", label:"(+03:00 UTC) Juba"},
+{value:"Africa/Kampala", label:"(+03:00 UTC) Kampala"},
+{value:"Africa/Khartoum", label:"(+03:00 UTC) Khartoum"},
+{value:"Africa/Mogadishu", label:"(+03:00 UTC) Mogadishu"},
+{value:"Africa/Nairobi", label:"(+03:00 UTC) Nairobi"}];
+
+var america = [
+{value:"America/Adak", label:"(-09:00 UTC) Adak"},
+{value:"America/Anchorage", label:"(-08:00 UTC) Anchorage"},
+{value:"America/Juneau", label:"(-08:00 UTC) Juneau"},
+{value:"America/Metlakatla", label:"(-08:00 UTC) Metlakatla"},
+{value:"America/Nome", label:"(-08:00 UTC) Nome"},
+{value:"America/Sitka", label:"(-08:00 UTC) Sitka"},
+{value:"America/Yakutat", label:"(-08:00 UTC) Yakutat"},
+{value:"America/Creston", label:"(-07:00 UTC) Creston"},
+{value:"America/Dawson", label:"(-07:00 UTC) Dawson"},
+{value:"America/Dawson_Creek", label:"(-07:00 UTC) Dawson Creek"},
+{value:"America/Hermosillo", label:"(-07:00 UTC) Hermosillo"},
+{value:"America/Los_Angeles", label:"(-07:00 UTC) Los Angeles"},
+{value:"America/Phoenix", label:"(-07:00 UTC) Phoenix"},
+{value:"America/Santa_Isabel", label:"(-07:00 UTC) Santa Isabel"},
+{value:"America/Tijuana", label:"(-07:00 UTC) Tijuana"},
+{value:"America/Vancouver", label:"(-07:00 UTC) Vancouver"},
+{value:"America/Whitehorse", label:"(-07:00 UTC) Whitehorse"},
+{value:"America/Belize", label:"(-06:00 UTC) Belize"},
+{value:"America/Boise", label:"(-06:00 UTC) Boise"},
+{value:"America/Cambridge_Bay", label:"(-06:00 UTC) Cambridge Bay"},
+{value:"America/Chihuahua", label:"(-06:00 UTC) Chihuahua"},
+{value:"America/Costa_Rica", label:"(-06:00 UTC) Costa Rica"},
+{value:"America/Denver", label:"(-06:00 UTC) Denver"},
+{value:"America/Edmonton", label:"(-06:00 UTC) Edmonton"},
+{value:"America/El_Salvador", label:"(-06:00 UTC) El Salvador"},
+{value:"America/Guatemala", label:"(-06:00 UTC) Guatemala"},
+{value:"America/Inuvik", label:"(-06:00 UTC) Inuvik"},
+{value:"America/Managua", label:"(-06:00 UTC) Managua"},
+{value:"America/Mazatlan", label:"(-06:00 UTC) Mazatlan"},
+{value:"America/Ojinaga", label:"(-06:00 UTC) Ojinaga"},
+{value:"America/Regina", label:"(-06:00 UTC) Regina"},
+{value:"America/Swift_Current", label:"(-06:00 UTC) Swift Current"},
+{value:"America/Tegucigalpa", label:"(-06:00 UTC) Tegucigalpa"},
+{value:"America/Yellowknife", label:"(-06:00 UTC) Yellowknife"},
+{value:"America/Atikokan", label:"(-05:00 UTC) Atikokan"},
+{value:"America/Bahia_Banderas", label:"(-05:00 UTC) Bahia Banderas"},
+{value:"America/Bogota", label:"(-05:00 UTC) Bogota"},
+{value:"America/Cancun", label:"(-05:00 UTC) Cancun"},
+{value:"America/Cayman", label:"(-05:00 UTC) Cayman"},
+{value:"America/Chicago", label:"(-05:00 UTC) Chicago"},
+{value:"America/Eirunepe", label:"(-05:00 UTC) Eirunepe"},
+{value:"America/Guayaquil", label:"(-05:00 UTC) Guayaquil"},
+{value:"America/Indiana/Knox", label:"(-05:00 UTC) Indiana/Knox"},
+{value:"America/Indiana/Tell_City", label:"(-05:00 UTC) Indiana/Tell City"},
+{value:"America/Jamaica", label:"(-05:00 UTC) Jamaica"},
+{value:"America/Lima", label:"(-05:00 UTC) Lima"},
+{value:"America/Matamoros", label:"(-05:00 UTC) Matamoros"},
+{value:"America/Menominee", label:"(-05:00 UTC) Menominee"},
+{value:"America/Merida", label:"(-05:00 UTC) Merida"},
+{value:"America/Mexico_City", label:"(-05:00 UTC) Mexico City"},
+{value:"America/Monterrey", label:"(-05:00 UTC) Monterrey"},
+{value:"America/North_Dakota/Beulah", label:"(-05:00 UTC) North Dakota/Beulah"},
+{value:"America/North_Dakota/Center", label:"(-05:00 UTC) North Dakota/Center"},
+{value:"America/North_Dakota/New_Salem", label:"(-05:00 UTC) North Dakota/New Salem"},
+{value:"America/Panama", label:"(-05:00 UTC) Panama"},
+{value:"America/Rainy_River", label:"(-05:00 UTC) Rainy River"},
+{value:"America/Rankin_Inlet", label:"(-05:00 UTC) Rankin Inlet"},
+{value:"America/Resolute", label:"(-05:00 UTC) Resolute"},
+{value:"America/Rio_Branco", label:"(-05:00 UTC) Rio Branco"},
+{value:"America/Winnipeg", label:"(-05:00 UTC) Winnipeg"},
+{value:"America/Caracas", label:"(-04:30 UTC) Caracas"},
+{value:"America/Anguilla", label:"(-04:00 UTC) Anguilla"},
+{value:"America/Antigua", label:"(-04:00 UTC) Antigua"},
+{value:"America/Aruba", label:"(-04:00 UTC) Aruba"},
+{value:"America/Asuncion", label:"(-04:00 UTC) Asuncion"},
+{value:"America/Barbados", label:"(-04:00 UTC) Barbados"},
+{value:"America/Blanc-Sablon", label:"(-04:00 UTC) Blanc-Sablon"},
+{value:"America/Boa_Vista", label:"(-04:00 UTC) Boa Vista"},
+{value:"America/Campo_Grande", label:"(-04:00 UTC) Campo Grande"},
+{value:"America/Cuiaba", label:"(-04:00 UTC) Cuiaba"},
+{value:"America/Curacao", label:"(-04:00 UTC) Curacao"},
+{value:"America/Detroit", label:"(-04:00 UTC) Detroit"},
+{value:"America/Dominica", label:"(-04:00 UTC) Dominica"},
+{value:"America/Grand_Turk", label:"(-04:00 UTC) Grand Turk"},
+{value:"America/Grenada", label:"(-04:00 UTC) Grenada"},
+{value:"America/Guadeloupe", label:"(-04:00 UTC) Guadeloupe"},
+{value:"America/Guyana", label:"(-04:00 UTC) Guyana"},
+{value:"America/Havana", label:"(-04:00 UTC) Havana"},
+{value:"America/Indiana/Indianapolis", label:"(-04:00 UTC) Indiana/Indianapolis"},
+{value:"America/Indiana/Marengo", label:"(-04:00 UTC) Indiana/Marengo"},
+{value:"America/Indiana/Petersburg", label:"(-04:00 UTC) Indiana/Petersburg"},
+{value:"America/Indiana/Vevay", label:"(-04:00 UTC) Indiana/Vevay"},
+{value:"America/Indiana/Vincennes", label:"(-04:00 UTC) Indiana/Vincennes"},
+{value:"America/Indiana/Winamac", label:"(-04:00 UTC) Indiana/Winamac"},
+{value:"America/Iqaluit", label:"(-04:00 UTC) Iqaluit"},
+{value:"America/Kentucky/Louisville", label:"(-04:00 UTC) Kentucky/Louisville"},
+{value:"America/Kentucky/Monticello", label:"(-04:00 UTC) Kentucky/Monticello"},
+{value:"America/Kralendijk", label:"(-04:00 UTC) Kralendijk"},
+{value:"America/La_Paz", label:"(-04:00 UTC) La Paz"},
+{value:"America/Lower_Princes", label:"(-04:00 UTC) Lower Princes"},
+{value:"America/Manaus", label:"(-04:00 UTC) Manaus"},
+{value:"America/Marigot", label:"(-04:00 UTC) Marigot"},
+{value:"America/Martinique", label:"(-04:00 UTC) Martinique"},
+{value:"America/Montserrat", label:"(-04:00 UTC) Montserrat"},
+{value:"America/Nassau", label:"(-04:00 UTC) Nassau"},
+{value:"America/New_York", label:"(-04:00 UTC) New York"},
+{value:"America/Nipigon", label:"(-04:00 UTC) Nipigon"},
+{value:"America/Pangnirtung", label:"(-04:00 UTC) Pangnirtung"},
+{value:"America/Port-au-Prince", label:"(-04:00 UTC) Port-au-Prince"},
+{value:"America/Port_of_Spain", label:"(-04:00 UTC) Port of Spain"},
+{value:"America/Porto_Velho", label:"(-04:00 UTC) Porto Velho"},
+{value:"America/Puerto_Rico", label:"(-04:00 UTC) Puerto Rico"},
+{value:"America/Santo_Domingo", label:"(-04:00 UTC) Santo Domingo"},
+{value:"America/St_Barthelemy", label:"(-04:00 UTC) St Barthelemy"},
+{value:"America/St_Kitts", label:"(-04:00 UTC) St Kitts"},
+{value:"America/St_Lucia", label:"(-04:00 UTC) St Lucia"},
+{value:"America/St_Thomas", label:"(-04:00 UTC) St Thomas"},
+{value:"America/St_Vincent", label:"(-04:00 UTC) St Vincent"},
+{value:"America/Thunder_Bay", label:"(-04:00 UTC) Thunder Bay"},
+{value:"America/Toronto", label:"(-04:00 UTC) Toronto"},
+{value:"America/Tortola", label:"(-04:00 UTC) Tortola"},
+{value:"America/Araguaina", label:"(-03:00 UTC) Araguaina"},
+{value:"America/Argentina/Buenos_Aires", label:"(-03:00 UTC) Argentina/Buenos Aires"},
+{value:"America/Argentina/Catamarca", label:"(-03:00 UTC) Argentina/Catamarca"},
+{value:"America/Argentina/Cordoba", label:"(-03:00 UTC) Argentina/Cordoba"},
+{value:"America/Argentina/Jujuy", label:"(-03:00 UTC) Argentina/Jujuy"},
+{value:"America/Argentina/La_Rioja", label:"(-03:00 UTC) Argentina/La Rioja"},
+{value:"America/Argentina/Mendoza", label:"(-03:00 UTC) Argentina/Mendoza"},
+{value:"America/Argentina/Rio_Gallegos", label:"(-03:00 UTC) Argentina/Rio Gallegos"},
+{value:"America/Argentina/Salta", label:"(-03:00 UTC) Argentina/Salta"},
+{value:"America/Argentina/San_Juan", label:"(-03:00 UTC) Argentina/San Juan"},
+{value:"America/Argentina/San_Luis", label:"(-03:00 UTC) Argentina/San Luis"},
+{value:"America/Argentina/Tucuman", label:"(-03:00 UTC) Argentina/Tucuman"},
+{value:"America/Argentina/Ushuaia", label:"(-03:00 UTC) Argentina/Ushuaia"},
+{value:"America/Bahia", label:"(-03:00 UTC) Bahia"},
+{value:"America/Belem", label:"(-03:00 UTC) Belem"},
+{value:"America/Cayenne", label:"(-03:00 UTC) Cayenne"},
+{value:"America/Fortaleza", label:"(-03:00 UTC) Fortaleza"},
+{value:"America/Glace_Bay", label:"(-03:00 UTC) Glace Bay"},
+{value:"America/Goose_Bay", label:"(-03:00 UTC) Goose Bay"},
+{value:"America/Halifax", label:"(-03:00 UTC) Halifax"},
+{value:"America/Maceio", label:"(-03:00 UTC) Maceio"},
+{value:"America/Moncton", label:"(-03:00 UTC) Moncton"},
+{value:"America/Montevideo", label:"(-03:00 UTC) Montevideo"},
+{value:"America/Paramaribo", label:"(-03:00 UTC) Paramaribo"},
+{value:"America/Recife", label:"(-03:00 UTC) Recife"},
+{value:"America/Santarem", label:"(-03:00 UTC) Santarem"},
+{value:"America/Santiago", label:"(-03:00 UTC) Santiago"},
+{value:"America/Sao_Paulo", label:"(-03:00 UTC) Sao Paulo"},
+{value:"America/Thule", label:"(-03:00 UTC) Thule"},
+{value:"America/Godthab", label:"(-02:00 UTC) Godthab"},
+{value:"America/Miquelon", label:"(-02:00 UTC) Miquelon"},
+{value:"America/Noronha", label:"(-02:00 UTC) Noronha"},
+{value:"America/St_Johns", label:"(-02:30 UTC) St Johns"},
+{value:"America/Danmarkshavn", label:"(+00:00 UTC) Danmarkshavn"},
+{value:"America/Scoresbysund", label:"(+00:00 UTC) Scoresbysund"}];
+
+var antarctica = [{value:"Antarctica/Palmer", label:"(-03:00 UTC) Palmer"},
+{value:"Antarctica/Rothera", label:"(-03:00 UTC) Rothera"},
+{value:"Antarctica/Troll", label:"(+02:00 UTC) Troll"},
+{value:"Antarctica/Syowa", label:"(+03:00 UTC) Syowa"},
+{value:"Antarctica/Mawson", label:"(+05:00 UTC) Mawson"},
+{value:"Antarctica/Vostok", label:"(+06:00 UTC) Vostok"},
+{value:"Antarctica/Davis", label:"(+07:00 UTC) Davis"},
+{value:"Antarctica/Casey", label:"(+08:00 UTC) Casey"},
+{value:"Antarctica/DumontDUrville", label:"(+10:00 UTC) DumontDUrville"},
+{value:"Antarctica/Macquarie", label:"(+11:00 UTC) Macquarie"},
+{value:"Antarctica/McMurdo", label:"(+12:00 UTC) McMurdo"}];
+
+var asia = [{value:"Asia/Aden", label:"(+03:00 UTC) Aden"},
+{value:"Asia/Amman", label:"(+03:00 UTC) Amman"},
+{value:"Asia/Baghdad", label:"(+03:00 UTC) Baghdad"},
+{value:"Asia/Bahrain", label:"(+03:00 UTC) Bahrain"},
+{value:"Asia/Beirut", label:"(+03:00 UTC) Beirut"},
+{value:"Asia/Damascus", label:"(+03:00 UTC) Damascus"},
+{value:"Asia/Gaza", label:"(+03:00 UTC) Gaza"},
+{value:"Asia/Hebron", label:"(+03:00 UTC) Hebron"},
+{value:"Asia/Jerusalem", label:"(+03:00 UTC) Jerusalem"},
+{value:"Asia/Kuwait", label:"(+03:00 UTC) Kuwait"},
+{value:"Asia/Nicosia", label:"(+03:00 UTC) Nicosia"},
+{value:"Asia/Qatar", label:"(+03:00 UTC) Qatar"},
+{value:"Asia/Riyadh", label:"(+03:00 UTC) Riyadh"},
+{value:"Asia/Kabul", label:"(+04:30 UTC) Kabul"},
+{value:"Asia/Tehran", label:"(+04:30 UTC) Tehran"},
+{value:"Asia/Dubai", label:"(+04:00 UTC) Dubai"},
+{value:"Asia/Muscat", label:"(+04:00 UTC) Muscat"},
+{value:"Asia/Tbilisi", label:"(+04:00 UTC) Tbilisi"},
+{value:"Asia/Yerevan", label:"(+04:00 UTC) Yerevan"},
+{value:"Asia/Kathmandu", label:"(+05:45 UTC) Kathmandu"},
+{value:"Asia/Colombo", label:"(+05:30 UTC) Colombo"},
+{value:"Asia/Kolkata", label:"(+05:30 UTC) Kolkata"},
+{value:"Asia/Aqtau", label:"(+05:00 UTC) Aqtau"},
+{value:"Asia/Aqtobe", label:"(+05:00 UTC) Aqtobe"},
+{value:"Asia/Ashgabat", label:"(+05:00 UTC) Ashgabat"},
+{value:"Asia/Baku", label:"(+05:00 UTC) Baku"},
+{value:"Asia/Dushanbe", label:"(+05:00 UTC) Dushanbe"},
+{value:"Asia/Karachi", label:"(+05:00 UTC) Karachi"},
+{value:"Asia/Oral", label:"(+05:00 UTC) Oral"},
+{value:"Asia/Samarkand", label:"(+05:00 UTC) Samarkand"},
+{value:"Asia/Tashkent", label:"(+05:00 UTC) Tashkent"},
+{value:"Asia/Yekaterinburg", label:"(+05:00 UTC) Yekaterinburg"},
+{value:"Asia/Almaty", label:"(+06:00 UTC) Almaty"},
+{value:"Asia/Bishkek", label:"(+06:00 UTC) Bishkek"},
+{value:"Asia/Dhaka", label:"(+06:00 UTC) Dhaka"},
+{value:"Asia/Novosibirsk", label:"(+06:00 UTC) Novosibirsk"},
+{value:"Asia/Omsk", label:"(+06:00 UTC) Omsk"},
+{value:"Asia/Qyzylorda", label:"(+06:00 UTC) Qyzylorda"},
+{value:"Asia/Thimphu", label:"(+06:00 UTC) Thimphu"},
+{value:"Asia/Urumqi", label:"(+06:00 UTC) Urumqi"},
+{value:"Asia/Rangoon", label:"(+06:30 UTC) Rangoon"},
+{value:"Asia/Bangkok", label:"(+07:00 UTC) Bangkok"},
+{value:"Asia/Ho_Chi_Minh", label:"(+07:00 UTC) Ho Chi Minh"},
+{value:"Asia/Jakarta", label:"(+07:00 UTC) Jakarta"},
+{value:"Asia/Krasnoyarsk", label:"(+07:00 UTC) Krasnoyarsk"},
+{value:"Asia/Novokuznetsk", label:"(+07:00 UTC) Novokuznetsk"},
+{value:"Asia/Phnom_Penh", label:"(+07:00 UTC) Phnom Penh"},
+{value:"Asia/Pontianak", label:"(+07:00 UTC) Pontianak"},
+{value:"Asia/Vientiane", label:"(+07:00 UTC) Vientiane"},
+{value:"Asia/Pyongyang", label:"(+08:30 UTC) Pyongyang"},
+{value:"Asia/Brunei", label:"(+08:00 UTC) Brunei"},
+{value:"Asia/Chita", label:"(+08:00 UTC) Chita"},
+{value:"Asia/Hong_Kong", label:"(+08:00 UTC) Hong Kong"},
+{value:"Asia/Hovd", label:"(+08:00 UTC) Hovd"},
+{value:"Asia/Irkutsk", label:"(+08:00 UTC) Irkutsk"},
+{value:"Asia/Kuala_Lumpur", label:"(+08:00 UTC) Kuala Lumpur"},
+{value:"Asia/Kuching", label:"(+08:00 UTC) Kuching"},
+{value:"Asia/Macau", label:"(+08:00 UTC) Macau"},
+{value:"Asia/Makassar", label:"(+08:00 UTC) Makassar"},
+{value:"Asia/Manila", label:"(+08:00 UTC) Manila"},
+{value:"Asia/Shanghai", label:"(+08:00 UTC) Shanghai"},
+{value:"Asia/Singapore", label:"(+08:00 UTC) Singapore"},
+{value:"Asia/Taipei", label:"(+08:00 UTC) Taipei"},
+{value:"Asia/Choibalsan", label:"(+09:00 UTC) Choibalsan"},
+{value:"Asia/Dili", label:"(+09:00 UTC) Dili"},
+{value:"Asia/Jayapura", label:"(+09:00 UTC) Jayapura"},
+{value:"Asia/Khandyga", label:"(+09:00 UTC) Khandyga"},
+{value:"Asia/Seoul", label:"(+09:00 UTC) Seoul"},
+{value:"Asia/Tokyo", label:"(+09:00 UTC) Tokyo"},
+{value:"Asia/Ulaanbaatar", label:"(+09:00 UTC) Ulaanbaatar"},
+{value:"Asia/Yakutsk", label:"(+09:00 UTC) Yakutsk"},
+{value:"Asia/Magadan", label:"(+10:00 UTC) Magadan"},
+{value:"Asia/Sakhalin", label:"(+10:00 UTC) Sakhalin"},
+{value:"Asia/Ust-Nera", label:"(+10:00 UTC) Ust-Nera"},
+{value:"Asia/Vladivostok", label:"(+10:00 UTC) Vladivostok"},
+{value:"Asia/Srednekolymsk", label:"(+11:00 UTC) Srednekolymsk"},
+{value:"Asia/Anadyr", label:"(+12:00 UTC) Anadyr"},
+{value:"Asia/Kamchatka", label:"(+12:00 UTC) Kamchatka"}];
+
+var atlantic = [{value:"Atlantic/Bermuda", label:"(-03:00 UTC) Bermuda"},
+{value:"Atlantic/Stanley", label:"(-03:00 UTC) Stanley"},
+{value:"Atlantic/South_Georgia", label:"(-02:00 UTC) South Georgia"},
+{value:"Atlantic/Cape_Verde", label:"(-01:00 UTC) Cape Verde"},
+{value:"Atlantic/Azores", label:"(+00:00 UTC) Azores"},
+{value:"Atlantic/Reykjavik", label:"(+00:00 UTC) Reykjavik"},
+{value:"Atlantic/St_Helena", label:"(+00:00 UTC) St Helena"},
+{value:"Atlantic/Canary", label:"(+01:00 UTC) Canary"},
+{value:"Atlantic/Faroe", label:"(+01:00 UTC) Faroe"},
+{value:"Atlantic/Madeira", label:"(+01:00 UTC) Madeira"}];
+
+var europe = [{value:"Europe/Dublin", label:"(+01:00 UTC) Dublin"},
+{value:"Europe/Guernsey", label:"(+01:00 UTC) Guernsey"},
+{value:"Europe/Isle_of_Man", label:"(+01:00 UTC) Isle of Man"},
+{value:"Europe/Jersey", label:"(+01:00 UTC) Jersey"},
+{value:"Europe/Lisbon", label:"(+01:00 UTC) Lisbon"},
+{value:"Europe/London", label:"(+01:00 UTC) London"},
+{value:"Europe/Amsterdam", label:"(+02:00 UTC) Amsterdam"},
+{value:"Europe/Andorra", label:"(+02:00 UTC) Andorra"},
+{value:"Europe/Belgrade", label:"(+02:00 UTC) Belgrade"},
+{value:"Europe/Berlin", label:"(+02:00 UTC) Berlin"},
+{value:"Europe/Bratislava", label:"(+02:00 UTC) Bratislava"},
+{value:"Europe/Brussels", label:"(+02:00 UTC) Brussels"},
+{value:"Europe/Budapest", label:"(+02:00 UTC) Budapest"},
+{value:"Europe/Busingen", label:"(+02:00 UTC) Busingen"},
+{value:"Europe/Copenhagen", label:"(+02:00 UTC) Copenhagen"},
+{value:"Europe/Gibraltar", label:"(+02:00 UTC) Gibraltar"},
+{value:"Europe/Kaliningrad", label:"(+02:00 UTC) Kaliningrad"},
+{value:"Europe/Ljubljana", label:"(+02:00 UTC) Ljubljana"},
+{value:"Europe/Luxembourg", label:"(+02:00 UTC) Luxembourg"},
+{value:"Europe/Madrid", label:"(+02:00 UTC) Madrid"},
+{value:"Europe/Malta", label:"(+02:00 UTC) Malta"},
+{value:"Europe/Monaco", label:"(+02:00 UTC) Monaco"},
+{value:"Europe/Oslo", label:"(+02:00 UTC) Oslo"},
+{value:"Europe/Paris", label:"(+02:00 UTC) Paris"},
+{value:"Europe/Podgorica", label:"(+02:00 UTC) Podgorica"},
+{value:"Europe/Prague", label:"(+02:00 UTC) Prague"},
+{value:"Europe/Rome", label:"(+02:00 UTC) Rome"},
+{value:"Europe/San_Marino", label:"(+02:00 UTC) San Marino"},
+{value:"Europe/Sarajevo", label:"(+02:00 UTC) Sarajevo"},
+{value:"Europe/Skopje", label:"(+02:00 UTC) Skopje"},
+{value:"Europe/Stockholm", label:"(+02:00 UTC) Stockholm"},
+{value:"Europe/Tirane", label:"(+02:00 UTC) Tirane"},
+{value:"Europe/Vaduz", label:"(+02:00 UTC) Vaduz"},
+{value:"Europe/Vatican", label:"(+02:00 UTC) Vatican"},
+{value:"Europe/Vienna", label:"(+02:00 UTC) Vienna"},
+{value:"Europe/Warsaw", label:"(+02:00 UTC) Warsaw"},
+{value:"Europe/Zagreb", label:"(+02:00 UTC) Zagreb"},
+{value:"Europe/Zurich", label:"(+02:00 UTC) Zurich"},
+{value:"Europe/Athens", label:"(+03:00 UTC) Athens"},
+{value:"Europe/Bucharest", label:"(+03:00 UTC) Bucharest"},
+{value:"Europe/Chisinau", label:"(+03:00 UTC) Chisinau"},
+{value:"Europe/Helsinki", label:"(+03:00 UTC) Helsinki"},
+{value:"Europe/Istanbul", label:"(+03:00 UTC) Istanbul"},
+{value:"Europe/Kiev", label:"(+03:00 UTC) Kiev"},
+{value:"Europe/Mariehamn", label:"(+03:00 UTC) Mariehamn"},
+{value:"Europe/Minsk", label:"(+03:00 UTC) Minsk"},
+{value:"Europe/Moscow", label:"(+03:00 UTC) Moscow"},
+{value:"Europe/Riga", label:"(+03:00 UTC) Riga"},
+{value:"Europe/Simferopol", label:"(+03:00 UTC) Simferopol"},
+{value:"Europe/Sofia", label:"(+03:00 UTC) Sofia"},
+{value:"Europe/Tallinn", label:"(+03:00 UTC) Tallinn"},
+{value:"Europe/Uzhgorod", label:"(+03:00 UTC) Uzhgorod"},
+{value:"Europe/Vilnius", label:"(+03:00 UTC) Vilnius"},
+{value:"Europe/Volgograd", label:"(+03:00 UTC) Volgograd"},
+{value:"Europe/Zaporozhye", label:"(+03:00 UTC) Zaporozhye"},
+{value:"Europe/Samara", label:"(+04:00 UTC) Samara"}];
+
+var indian = [
+{value:"Indian/Antananarivo", label:"(+03:00 UTC) Antananarivo"},
+{value:"Indian/Comoro", label:"(+03:00 UTC) Comoro"},
+{value:"Indian/Mayotte", label:"(+03:00 UTC) Mayotte"},
+{value:"Indian/Mahe", label:"(+04:00 UTC) Mahe"},
+{value:"Indian/Mauritius", label:"(+04:00 UTC) Mauritius"},
+{value:"Indian/Reunion", label:"(+04:00 UTC) Reunion"},
+{value:"Indian/Kerguelen", label:"(+05:00 UTC) Kerguelen"},
+{value:"Indian/Maldives", label:"(+05:00 UTC) Maldives"},
+{value:"Indian/Cocos", label:"(+06:30 UTC) Cocos"},
+{value:"Indian/Chagos", label:"(+06:00 UTC) Chagos"},
+{value:"Indian/Christmas", label:"(+07:00 UTC) Christmas"}];
+
+var pacific = [
+{value:"Pacific/Midway", label:"(-11:00 UTC) Midway"},
+{value:"Pacific/Niue", label:"(-11:00 UTC) Niue"},
+{value:"Pacific/Pago_Pago", label:"(-11:00 UTC) Pago Pago"},
+{value:"Pacific/Honolulu", label:"(-10:00 UTC) Honolulu"},
+{value:"Pacific/Johnston", label:"(-10:00 UTC) Johnston"},
+{value:"Pacific/Rarotonga", label:"(-10:00 UTC) Rarotonga"},
+{value:"Pacific/Tahiti", label:"(-10:00 UTC) Tahiti"},
+{value:"Pacific/Marquesas", label:"(-09:30 UTC) Marquesas"},
+{value:"Pacific/Gambier", label:"(-09:00 UTC) Gambier"},
+{value:"Pacific/Pitcairn", label:"(-08:00 UTC) Pitcairn"},
+{value:"Pacific/Galapagos", label:"(-06:00 UTC) Galapagos"},
+{value:"Pacific/Easter", label:"(-05:00 UTC) Easter"},
+{value:"Pacific/Palau", label:"(+09:00 UTC) Palau"},
+{value:"Pacific/Chuuk", label:"(+10:00 UTC) Chuuk"},
+{value:"Pacific/Guam", label:"(+10:00 UTC) Guam"},
+{value:"Pacific/Port_Moresby", label:"(+10:00 UTC) Port Moresby"},
+{value:"Pacific/Saipan", label:"(+10:00 UTC) Saipan"},
+{value:"Pacific/Norfolk", label:"(+11:30 UTC) Norfolk"},
+{value:"Pacific/Bougainville", label:"(+11:00 UTC) Bougainville"},
+{value:"Pacific/Efate", label:"(+11:00 UTC) Efate"},
+{value:"Pacific/Guadalcanal", label:"(+11:00 UTC) Guadalcanal"},
+{value:"Pacific/Kosrae", label:"(+11:00 UTC) Kosrae"},
+{value:"Pacific/Noumea", label:"(+11:00 UTC) Noumea"},
+{value:"Pacific/Pohnpei", label:"(+11:00 UTC) Pohnpei"},
+{value:"Pacific/Auckland", label:"(+12:00 UTC) Auckland"},
+{value:"Pacific/Fiji", label:"(+12:00 UTC) Fiji"},
+{value:"Pacific/Funafuti", label:"(+12:00 UTC) Funafuti"},
+{value:"Pacific/Kwajalein", label:"(+12:00 UTC) Kwajalein"},
+{value:"Pacific/Majuro", label:"(+12:00 UTC) Majuro"},
+{value:"Pacific/Nauru", label:"(+12:00 UTC) Nauru"},
+{value:"Pacific/Tarawa", label:"(+12:00 UTC) Tarawa"},
+{value:"Pacific/Wake", label:"(+12:00 UTC) Wake"},
+{value:"Pacific/Wallis", label:"(+12:00 UTC) Wallis"},
+{value:"Pacific/Chatham", label:"(+12:45 UTC) Chatham"},
+{value:"Pacific/Apia", label:"(+13:00 UTC) Apia"},
+{value:"Pacific/Enderbury", label:"(+13:00 UTC) Enderbury"},
+{value:"Pacific/Fakaofo", label:"(+13:00 UTC) Fakaofo"},
+{value:"Pacific/Tongatapu", label:"(+13:00 UTC) Tongatapu"}];
+
+var timezones = [
+{name:"africa", zones:africa},
+{name:"america", zones:america},
+{name:"antarctica", zones: antarctica},
+{name:"asia", zones: asia},
+{name:"atlantic", zones: atlantic},
+{name:"europe", zones: europe},
+{name:"indian", zones: indian},
+{name:"pacific", zones: pacific}];
+
+
+var userzone = "{{user["timezone"] or "+00:00"}}";
+
+
+
+var select = document.getElementById("timezone");
+for(var i=0 ; i< timezones.length;i++){
+var optgroup = document.createElement("optgroup");
+optgroup.label = timezones[i].name;
+
+for(var z=0 ; z< timezones[i].zones.length;z++){
+
+var option = document.createElement("option");
+option.text = timezones[i].zones[z].label;
+option.value = timezones[i].zones[z].value;
+
+if(timezones[i].zones[z].value === userzone)
+	option.selected = true;
+
+
+optgroup.appendChild(option);
+
+}
+
+select.appendChild(optgroup);
+
+}
+
+/*
+for(var i=0 ; i< europe.length;i++){
+
+var option = document.createElement("option");
+option.text = europe[i].label;
+option.value = europe[i].value;
+
+//if(zones[i].value == userzone)
+    //option.selected = true;
+
+var select = document.getElementById("timezone");
+select.appendChild(option);
+
+
+
+}
+
+*/
+
+
+</script>
+
+
+{% endblock %}

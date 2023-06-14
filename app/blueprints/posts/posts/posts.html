@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} List of posts {% endblock %}</h1>
+    {% for post in posts %}
+        <a href = "{{ url_for('posts_api.post_view', id=post['id']) }}">
+            <h2>{{ post['title'] }}</h2>
+        </a>
+        <span class="badge badge-primary">{{ post['created'] }}</span>
+        <a href="{{ url_for('posts_api.post_edit', id=post['id']) }}">
+            <span class="badge badge-warning">Edit</span>
+        </a>
+        <hr>
+    {% endfor %}
+<a href = "{{url_for('posts_api.post_create')}}">
+            New Post
+        </a>
+
+        <hr>
+{% endblock %}
+
+

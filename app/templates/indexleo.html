@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Meta tags  -->
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>{% block page_title %} MetaDB {% endblock %}</title>
+    <link rel="icon" type="image/png" href="{{url_for('static', filename='nth/images/favicon.png')}}" />
+
+    <!-- CSS Assets -->
+    <link rel="stylesheet" href="{{url_for('static', filename='nth/css/app.css')}}" />
+
+    <!-- Custom CSS  -->
+    {% block css %}{% endblock %}
+
+    <!-- Javascript Assets -->
+
+    <!-- Javascript Third Party Libraries: Components -->
+    <script src="{{url_for('static', filename='nth/js/libs/components.js')}}" defer></script>
+
+    <!-- Special script for current page -->
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      /**
+       * THIS SCRIPT REQUIRED FOR PREVENT FLICKERING IN SOME BROWSERS
+       */
+      localStorage.getItem("dark-mode") === "dark" &&
+        document.documentElement.classList.add("dark");
+    </script>
+  </head>
+
+  <body class="is-header-blur">
+    <!-- App preloader-->
+    <div
+      class="app-preloader fixed z-50 grid h-full w-full place-content-center bg-slate-50 dark:bg-navy-900"
+    >
+      <div class="app-preloader-inner relative inline-block h-48 w-48"></div>
+    </div>
+
+    {% include './components/side-bar.html' %}
+
+    <!-- Page Wrapper -->
+    <div
+      id="root"
+      class="min-h-100vh cloak flex grow bg-slate-50 dark:bg-navy-900"
+    >
+
+      {% include 'components/header.html' %}
+      
+
+      <!-- Main Content Wrapper -->
+      <main class="main-content px-[var(--margin-x)] w-full pb-8">
+        <div
+          class="mt-4 flex  transition-all duration-[.25s] sm:mt-5 sm:gap-5 lg:mt-6 lg:gap-6"
+        >
+          
+          <ul class="flex items-center space-x-2">
+              
+            <h2 class="text-lg font-medium text-slate-800 dark:text-navy-50 lg:text-2xl">
+                MetaDB
+            </h2>
+          
+            <div class="hidden h-full py-1 sm:flex">
+              <div class="h-full w-px bg-slate-300 dark:bg-navy-600"></div>
+            </div>
+
+            {%- for breadcrumb in breadcrumbs -%}
+              {%  if not loop.last %}
+                <li class="flex items-center space-x-2">
+                  <a
+                    class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent"
+                    href="{{ breadcrumb.url }}">
+                    {{ breadcrumb.text }}
+                  </a>
+                  
+                  <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-3.5 w-3.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 5l7 7-7 7"/>
+                  </svg>
+                {% else %}
+                  <li class="breadcrumb-item active">{{ breadcrumb.text }}</li>
+                {% endif %}
+              {%- endfor -%}
+          </ul>
+        </div>
+        <div class="container mt-2">
+          {% block content %} 
+            {% include 'components/index-content.html' %}
+          {% endblock %}
+        </div>
+      </main>
+    </div>
+
+    {% include 'components/footer.html' %}
+  </body>
+  <script src="{{url_for('static', filename='nth/js/app.js')}}" defer></script>
+  <script type="module" src="{{url_for('static', filename='nth/js/libs/components.js')}}" defer></script>
+
+  {% block js %}{% endblock %}
+</html>

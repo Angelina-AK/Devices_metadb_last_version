@@ -1,0 +1,44 @@
+{% extends 'newbase.html' %}
+
+{% block content %}
+<h1>{% block title %} Create new attribute {% endblock %}</h1>
+
+<div class="col-md-6 col-12 mt-2">
+    <div class="card">
+        <div class="card-body">
+            <form method="post" class="form form-horizontal" action=" {% block form_action %} {{ url_for('attribute_api.create') }} {% endblock %}">
+
+                <div class="row">
+                    <div class="col-12">
+                        {% if e is defined %}
+                            <div class="alert alert-danger" role="alert">
+                                <h4 class="alert-heading">ERROR</h4>
+                                <div class="alert-body">
+                                {{e}}
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div> 
+
+                    <div class="col-12"> 
+                        <div class="mb-1 row">
+                            <div class="col-sm-3">
+                                <label class="col-form-label" for="first-name">Name</label>
+                            </div>
+                            <div class="col-sm-9">
+                                <input type="text" id="first-name" class="form-control" name="atr_name" 
+                                autocomplete="off" placeholder="Attribute name" value="{% block atr_value %}{% endblock %}"/>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="col-sm-9 offset-sm-3">
+                        <button type="submit" class="btn btn-primary me-1">Create</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

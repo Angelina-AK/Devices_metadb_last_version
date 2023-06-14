@@ -1,0 +1,193 @@
+{% extends 'indexleo.html' %}
+
+{% block page_title %} {{ namepage }} {% endblock %}
+
+{% block css %}
+
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@latest/dist/leaflet.css"/>
+	<link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css" />
+	<script src="https://unpkg.com/leaflet@latest/dist/leaflet.js"></script>
+
+	<style type="text/css">
+		.map {
+			height: 500px;
+		}
+	</style>
+
+{% endblock %}
+
+
+{% block content %}
+	
+	<div class="grid grid-cols-1 gap-4 sm:gap-5  lg:grid-cols-2 lg:gap-6">
+
+		<div class="card px-4 py-4 sm:px-5">
+			<div>
+				<h2 class="text-lg font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100">
+					Основная информация
+				</h2>
+			</div>
+
+			<div class="pt-2">
+				<form method="post">
+					<label class="block">
+						<span>Name:</span>
+						<input
+						class="form-input w-full mt-1.5 rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+						placeholder="Device name"
+						autocomplete="off"
+						type="text"
+						name="name"
+						value="{{ request.form['name'] or device['name'] }}"
+						{%- block isdisabled_input_name -%} disabled {%- endblock -%}
+						/>
+					</label>
+					
+					<label class="block mt-2">
+						<span>Key:</span>
+						<input
+						class="form-input w-full mt-1.5 rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+						placeholder="Device key"
+						autocomplete="off"
+						type="text"
+						name="key"
+						value="{{ request.form['key'] or device['key'] }}"
+						{%- block isdisabled_input_key -%} disabled {%- endblock -%}
+						/>
+					</label>
+
+					{%- block main_submit_btn -%} 
+					{%- endblock -%}
+				</form>
+				
+				{%- block delete_device -%}
+				{%- endblock -%}
+				
+			</div>
+		</div>
+
+		<div class="card px-4 py-4 sm:px-5">
+			<div>
+				<h2 class="text-lg font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100">
+					Log
+				</h2>
+			</div>
+			
+			<div class="pt-2 space-y-2">
+				<p class="">Создано: {{ device['created'] | datetime_user_tz }}</p>
+				<p class="">Обновлено: {{ device['updated'] | datetime_user_tz }}</p> 
+
+				{% if device.records[-1] is defined %}
+					<p class="">Последняя активность: {{ device.records[-1].created | datetime_user_tz }}</p> {% else %}
+					<p class="">Последняя активность: Отсутствует</p> 
+				{% endif %}
+			</div>
+		</div>
+
+		<div class="card px-4 py-4 sm:px-5">
+			<div>
+				<h2 class="text-lg font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100">
+					Потоки
+				</h2>
+			</div>
+			
+			<div class="pt-2">
+				<div class="card-body space-y-2"> 
+					{%- block edit_flows -%}
+					
+						{% for flow in flows %}
+							<label class="block ">
+								<input
+								class="form-input w-full  rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+								placeholder="Device key"
+								autocomplete="off"
+								type="text"
+								value="{{ flow['name'] }}"
+								disabled
+								/>
+							</label>
+						{% endfor %} 
+
+					{%- endblock -%}
+
+				</div>
+			</div>
+		</div>
+
+		<div class="card px-4 py-4 sm:px-5">
+			<div>
+				<h2 class="text-lg font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100">
+					Параметры
+				</h2>
+			</div>
+			
+			<div class="pt-2 space-y-2">
+				{%- block edit_params -%}
+					{%- for param in params -%}
+						<label class="block">
+							<span>{{ param['name'] }}:</span>
+							<input
+							class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+							autocomplete="off"
+							type="text"
+							value="{{ param['value']}}"
+							disabled
+							/>
+						</label>
+						
+					{%- endfor -%}
+				{%- endblock -%}
+			</div>
+		</div>
+
+		{%- block edit_sensors -%}
+		{%- endblock -%}
+
+		{%- block edit_decoder -%}
+		{%- endblock -%}
+
+	</div>
+
+	{% if floor.floor %}
+
+		<div class = "map" id="map"></div>
+		<img id = "imgr" src="/static/upload/{{ floor.floor.image }}" style="display: none;">
+
+		<script>
+
+			// center of the map
+			var center = [0,0];
+
+			// Create the map
+			var map = L.map('map', {
+				minZoom: 5,
+				maxZoom: 10,
+				center: [0, 0],
+				zoom: 8,
+				crs: L.CRS.Simple,
+			});
+
+			var mark = [{{ floor["lat"]}}, {{floor["lng"]}} ];
+
+			// add a marker in the given location
+			L.marker(mark).addTo(map);
+
+
+			var w = document.getElementById('imgr').naturalWidth;
+				var h = document.getElementById('imgr').naturalHeight;
+			var url = '/static/upload/{{ floor.floor.image }}';
+
+
+			var southWest = map.unproject([0, h], map.getMaxZoom() - 1);
+			var northEast = map.unproject([w, 0], map.getMaxZoom() - 1);
+			var bounds = new L.LatLngBounds(southWest, northEast);
+
+
+			map.setMaxBounds(bounds);
+			L.imageOverlay(url, bounds).addTo(map);
+
+		</script>
+
+	{% endif %}
+
+{% endblock %}

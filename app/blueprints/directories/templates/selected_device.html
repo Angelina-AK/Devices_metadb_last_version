@@ -1,0 +1,242 @@
+{%- extends 'indexleo.html' -%}
+
+{%- block content -%}
+
+<!  Для перевода в формат времени js moments   >
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+
+<!  Для графиков  Plotly >
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<!  Для выбора диапазона дат >
+<script src="https://lineone.piniastudio.com/js/app.js"></script>
+
+
+
+
+<input type="text" value="{{device_id}}" id="device_id" hidden>
+
+{% for s in sensors %}
+       <div class="card px-4 pb-4 col-span-5  dark:shadow dark:shadow-blue-500/40 max-h-max items-center">
+          <div class="mt-3  h-8 items-center justify-between">
+              <h2 class="font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100 lg:text-base">
+                {{s['name']}}
+              </h2>
+          </div>
+           <div class="items-center justify-between border border-slate-150 p-4 dark:border-navy-600" id="myAreaChart{{s['id']}}" data-sensor="{{s['decode_key']}}" style="background: transparent; border-width: 1px;">
+
+               <!  Пока загружается график >
+               <div class="skeleton animate-wave h-48 w-full rounded-lg bg-slate-150 dark:bg-navy-500" style="width: 800pt;height: 285pt;"></div>
+               <br>
+           </div>
+           <br>
+           <label class="relative flex " style="width: 190pt;">
+               <input id="input{{s['id']}}"
+                      x-init="$el._x_flatpickr = flatpickr($el,{mode: 'range',dateFormat: 'd-m-Y',
+                                                                onClose: function (selectedDates, date_str, instance) {
+                                                                    let from = flatpickr.formatDate(selectedDates[0], 'Y-m-d')
+                                                                    let to = flatpickr.formatDate(selectedDates[1], 'Y-m-d')
+
+                                                                    console.log(from)
+                                                                    console.log(to)
+
+                                                                    let chart_div = document.querySelector(`div[id=myAreaChart{{s['id']}}]`)
+                                                                    Plotly.relayout(chart_div,'xaxis.range', [from,to])
+                                                                    }
+                                                                })"
+                      class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent flatpickr-input active"
+                      placeholder="Выбрать диапазон дат"
+                      type="text"
+                      readonly="readonly" defer>
+                    <span class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-navy-300 dark:peer-focus:text-accent">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-colors duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </span>
+           </label>
+       </div>
+<br><br>
+
+{% endfor %}
+
+
+<br>
+
+<script>
+    {{ decoder_format.value | safe }}
+    let sprav_info = {{sprav_info | tojson| safe }};
+
+
+( async () => { // webpackBootstrap
+    var __webpack_exports__ = {};
+    const device_id = document.querySelector('#device_id').value;
+
+    // Получаем данные с устройства (включая value - необработанные значения)
+    const fetchData = async () => {
+        const response = await fetch(`/directories/${device_id}/get_data`);
+        const data = await response.json();
+        return  data;
+    }
+
+
+    // Зоны графиков
+    let chartsArea = document.querySelectorAll(`div[id^=myAreaChart]`)
+
+    // Функция декодирования
+    var onLoad =  async function onLoad() {
+
+
+        const data = await fetchData(); // полученные данные с устройства
+        let parsedData = Array(); // массив с будущими декодированными данными
+
+        let x_time = [];
+        // декодирование значений с устройства
+        data.forEach(e => {
+            parsedData.push(decoder(JSON.parse(e.value)));
+
+            let time = moment(e.created).format('YYYY-MM-DD HH:MM:SS');
+            x_time.push(e.created);
+
+        })
+
+        x_time.reverse();
+        parsedData = parsedData.reverse();
+        const parsedDataLen = parsedData.length - 1;
+
+        console.log( x_time);
+
+        chartsArea.forEach( e => {
+            const sensor = e.dataset.sensor;
+            let series = [];
+            let groups = [];
+
+            for(let i = 0 ; i <= parsedDataLen; i++) {
+                let value = parsedData[i].data[sensor]
+                series.push(value);
+
+                let flag = 0;
+
+                for(let s=0; s<sprav_info.length; s++){
+
+                    if(sprav_info[s][sensor]) {
+
+                        for(let r=0; r<sprav_info[s][sensor].length; r++) {
+
+                            if(value >= sprav_info[s][sensor][r].Min && value <= sprav_info[s][sensor][r].Max) {
+                                groups.push(sprav_info[s][sensor][r].Name);
+                                flag = 1;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+
+                if(flag == 0) {
+                    groups.push("Нет информации в справочнике");
+                }
+            }
+
+            let data_chart = [{
+               type: 'scatter',
+               x: x_time,
+               y: series,
+               mode: 'markers',
+               marker: {
+                    size: 5,
+               },
+               showlegend: true,
+               transforms: [{
+                    type: 'groupby',
+                    groups: groups,
+               }]
+            }];
+
+            var layout = {
+               font: {
+                 size: 13,
+                 color: '#707b94'
+               },
+               width: 1100,
+               height: 400,
+               margin: {
+                 l: 90,
+                 r: 110,
+                 b: 80,
+                 t: 50,
+                 pad: 4
+               },
+               xaxis: {
+                  title: {
+                      text: 'Дата получения значения с датчика',
+                      font: {
+                          size: 13,
+                          color: '#707b94',
+
+                      },
+                      standoff: 30
+                  },
+
+                  tickangle: 0,
+                  type: 'date',
+                  gridcolor: '#bdb9b9'
+               },
+               yaxis: {
+                   title: {
+                       text: 'Полученное значение',
+                       font: {
+                           size: 13,
+                           color: '#707b94'
+                       },
+                       standoff: 30
+                   },
+                   autorange: true,
+                   gridcolor: '#bdb9b9'
+
+               },
+               legend: {
+                    title: {
+                       text: "Области"
+                    },
+                    font: {
+                           size: 13,
+                           color: '#707b94'
+                    }
+               },
+                   paper_bgcolor:'rgba(0,0,0,0)',
+                   //'rgba(0,0,0,0)'
+                   plot_bgcolor: 'rgba(0,0,0,0)'
+            };
+
+            e.innerHTML = "";
+            Plotly.newPlot(e,data_chart,layout, {displaylogo: false});
+
+        })
+    }
+
+    window.addEventListener("app:mounted", onLoad, {
+       once: true
+    });
+
+
+})();
+</script>
+
+<! Для нормального отображения modebar графиков>
+<style>
+    svg {
+    display: inherit;
+}
+</style>
+
+
+
+<script>
+      window.addEventListener("DOMContentLoaded", () => Alpine.start());
+</script>
+
+{%- endblock -%}
+
+
+
+

@@ -1,0 +1,93 @@
+{% extends 'indexleo.html' %}
+
+{% block page_title %} Attributes {% endblock %} 
+
+
+{% block css %} 
+{% endblock %}
+
+{% block content %}
+
+<div class="is-scrollbar-hidden mt-2 min-w-full overflow-x-auto">
+  <table class="is-zebra w-full text-left">
+    <thead>
+      <tr>
+        <th
+          class="whitespace-nowrap rounded-l-lg bg-slate-200 px-3 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5"
+        >
+          #
+        </th>
+        <th
+          class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5"
+        >
+          Name
+        </th>
+        <th
+          class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5"
+        >
+          Created
+        </th>
+        <th
+          class="whitespace-nowrap bg-slate-200 px-3 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5"
+        >
+          Updated
+        </th>
+        <th
+          class="whitespace-nowrap rounded-r-lg bg-slate-200 px-3 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5"
+        >
+          Actions
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for atr in attributes %}
+        <tr id="{{atr.id}}">
+            <td class="whitespace-nowrap rounded-l-lg px-4 py-3 sm:px-5">{{ atr.id }}</td>
+            <td class="whitespace-nowrap px-4 py-3 sm:px-5">{{ atr.attribute_name }}</td>
+            <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+              {{ atr.created }}
+            </td>
+            <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+              {{ atr.updated }}
+            </td>
+            <td class="whitespace-nowrap rounded-r-lg  py-3 ">
+              <div class="flex pl-4 justify-start space-x-2">
+
+                <a href="{{ url_for('object_api.attribute_edit', id=atr.id) }}">
+                  <button class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
+                      <i class="fa fa-edit"></i>
+                  </button>
+                </a>
+
+                <button class="btn h-8 w-8 p-0 text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25 detele-attribute-btn"
+                  id="{{ atr.id }}">
+                    <i class="fa fa-trash-alt"></i>
+                </button>
+
+            </div>
+            </td>
+        </tr>
+      {% endfor %}             
+      
+    </tbody>
+  </table>
+</div>
+
+
+<div class="container  mt-4 flex justify-center">
+  <button
+  class="btn btn-primary"
+  >
+    <a  class="py-2 px-5" href="{{ url_for('object_api.attribute_create') }}">
+      Add new attribute
+    </a>
+  </button>
+</div>
+
+
+{% endblock %}
+
+{% block js %} 
+  <script type="module" src="{{ url_for('.static', filename='js/attributes/attributeDelete.js') }}"></script>
+{% endblock %}

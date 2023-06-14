@@ -1,0 +1,28 @@
+{%- extends 'indexleo.html' -%}
+
+{%- block content -%}
+    {%- for device in devices -%}
+        <div>
+            <a class="block" href = "{{ url_for('devices_api.device_view', id=device['id']) }}">
+                <h2>{{ device['name'] }}</h2>
+            </a>
+    
+            <div class="flex">
+                <span class="block mr-2">{{ device['updated'] | datetime_user_tz }}</span>
+                <a href="{{ url_for('devices_api.device_edit', id=device['id']) }}">
+                    <span class="inline tag bg-info text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">Edit</span>
+                </a>
+            </div>
+        </div>
+        
+
+        <div class="my-4 h-px  bg-slate-200 dark:bg-navy-500"></div>
+    {%- endfor -%}
+        
+    <a class="btn btn-primary px-3 py-2 mb-2" href = "{{url_for('devices_api.device_create')}}">
+        New device
+    </a>
+
+{%- endblock -%}
+
+

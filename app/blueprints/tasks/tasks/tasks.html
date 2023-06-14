@@ -1,0 +1,21 @@
+{% extends 'newbase.html' %}
+
+{% block content %}
+    {% for task in tasks %}
+        <a href = "{{ url_for('task_view', id=task['id']) }}">
+            <h2>{{ task['id'] }}</h2>
+        </a>
+        <span class="badge badge-primary">{{ task['created'] }}</span>
+        <a href="{{ url_for('task_edit', id=task['id']) }}">
+            <span class="badge badge-warning">Edit</span>
+        </a>
+        <hr>
+    {% endfor %}
+<a href = "{{url_for('task_create')}}">
+            New device
+        </a>
+
+        <hr>
+{% endblock %}
+
+

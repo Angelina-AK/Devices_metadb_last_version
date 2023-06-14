@@ -1,0 +1,296 @@
+{%- extends 'indexleo.html' -%}
+
+{%- block content -%}
+
+<! Подключение конфигурационного файла по ссылки>
+<script src="https://lineone.piniastudio.com/js/app.js"></script>
+
+
+
+<!--           Отображение мгновенных сообщений -->
+<!-- -------------------------------------------------------->
+{% for cat,msg in get_flashed_messages(True) %}
+<div class="alert flex rounded-full bg-{{cat}}/10 py-4 px-4 text-{{cat}} dark:bg-{{cat}}/15 sm:px-5">
+    {{msg}}
+</div>
+<br>
+{% endfor %}
+
+<!-- Карточка изменения самого диапазона -->
+<!-- -------------------------------------->
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6">
+ <form class="items-center justify-between" action="/directories/edit/update_range/{{range_info[4]}}" method="post" >
+  <div class="card items-center justify-between sm:p-5" >
+      <div class="my-3 flex h-8 items-center justify-between">
+          <h2 class="font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100 lg:text-base">
+              Основная информация
+          </h2>
+      </div>
+         <label class="block" style="width: 55%;">
+            <span>Тип датчика:</span>
+            <input name="Sensor" type="text" class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" placeholder="Type of sensor" value="{{range_info[1]}}"  required>
+        </label>
+
+        <label class="block" style="width: 55%;">
+            <span>Имя диапазона:</span>
+            <input name="Name" type="text" class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" placeholder="Range name" value="{{range_info[0]}}"  required>
+        </label>
+        <label class="block" style="width: 55%;">
+            <span>Интервал от:  </span>
+            <input name="Min" type="number" class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" placeholder="Min" value="{{range_info[2]}}" required>
+        </label >
+        <label class="block" style="width: 55%; padding-bottom: 1rem;">
+            <span>Интервал до:  </span>
+            <input name="Max" type="number" class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" placeholder="Max" value="{{range_info[3]}}" required>
+        </label>
+        <div style="padding-bottom: 1rem; ">
+             <button type="submit" class="btn border border-primary font-medium text-primary hover:bg-primary hover:text-white focus:bg-primary focus:text-white active:bg-primary/90 dark:border-accent dark:text-accent-light dark:hover:bg-accent dark:hover:text-white dark:focus:bg-accent dark:focus:text-white dark:active:bg-accent/90" >
+                Сохранить значения
+            </button>
+        </div>
+
+  </div>
+ </form>
+
+<!-- Карточка изменения проблем ----------->
+<!-- -------------------------------------->
+    <div class="card items-center justify-between sm:p-5">
+        <div class="my-3 flex h-8 items-center justify-between">
+              <h2 class="font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100 lg:text-base">
+                Проблемы в диапазоне
+              </h2>
+        </div>
+        <!-- Проблемы ( таблица полностьтю заполняется js) Прочитать, Изменить, Удалить -->
+        <!-- ------------------------------------------------------ -->
+        <form action="/" method="post" id="problem_form" onsubmit="return false;"> <!-- Действие формы изменяют кнопки (onclick) см ниже-->
+
+            <div id="grid-table-4" style="width: 100%;"></div>
+
+        </form>
+
+
+        <div class="my-4 h-px w-full bg-slate-200 dark:bg-navy-500"></div>
+
+            <!-- Добавление проблемы -->
+            <form class="form" action="/directories/add/prob/{{range_info[4]}}" method="post" >
+                <label class="block" style="width: 100%; padding-bottom: 1rem;">
+                     <span>Добавление проблемы:  </span>
+                     <input name="Name" type="text" class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" placeholder="Название проблемы" required>
+                </label>
+                <button type="submit" class="btn border border-primary font-medium text-primary hover:bg-primary hover:text-white focus:bg-primary focus:text-white active:bg-primary/90 dark:border-accent dark:text-accent-light dark:hover:bg-accent dark:hover:text-white dark:focus:bg-accent dark:focus:text-white dark:active:bg-accent/90" >
+                     Добавить
+                </button>
+            </form>
+        </div>
+    </div>
+
+<br>
+
+<!-- Карточка изменения советов ----------->
+<!-- -------------------------------------->
+<div class="card sm:p-5 ">
+    <div class="my-3 flex h-8 items-center justify-between">
+        <h2 class="font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100 lg:text-base">
+            Советы по решению проблем
+        </h2>
+    </div>
+    <!-- Советы ( таблица полностьтю заполняется js) Прочитать, Изменить, Удалить -->
+    <!-- ------------------------------------------------------ -->
+    <form action="/" method="post" id="advice_form" onsubmit="return false;"> <!-- Действие формы изменяют кнопки (onclick) см ниже-->
+        <div id="grid-table-5" style="width: 100%;"></div>
+    </form>
+    <br>
+    <div class="my-4 h-px w-full bg-slate-200 dark:bg-navy-500"></div>
+
+    <!-- Добавление совета при условии, что есть проблемы в диапазоне-->
+    {% if null_problems == false %}
+        <form action="/directories/add/advice" method="post" class="my-3 items-center justify-between" >
+            <label class="block" style="width: 30%;">
+                <span>Добавление совета к проблеме:</span>
+                <select name="Problem" class="form-select mt-1.5 w-full rounded-lg bg-slate-150 px-3 py-2 ring-primary/50 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:hover:bg-navy-900 dark:focus:bg-navy-900" >
+                    {% for prob in problems %} <!-- Выбор проблемы, к которой будет добавлен совет -->
+                        <option value="{{prob.id}}"> {{prob.Name}} </option>
+                    {% endfor -%}
+                </select>
+            </label>
+            <label class="block" style="width: 30%;">
+                <input name="Advice" type="text" class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" placeholder="Содержание совета" required>
+            </label>
+            <br>
+            <button type="submit" class="btn border border-primary font-medium text-primary hover:bg-primary hover:text-white focus:bg-primary focus:text-white active:bg-primary/90 dark:border-accent dark:text-accent-light dark:hover:bg-accent dark:hover:text-white dark:focus:bg-accent dark:focus:text-white dark:active:bg-accent/90" >
+                Добавить
+            </button>
+        </form>
+    {% endif %}
+
+</div>
+
+
+
+
+<! Запуск работы Alpine >
+<script>
+      window.addEventListener("DOMContentLoaded", () => Alpine.start());
+</script>
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    //                 Таблица проблем
+    //__________________________________________________
+
+    let problem_info = {{problem_info | tojson| safe }};
+
+
+  const gridTable4 = document.querySelector("#grid-table-4");
+  const gridConfig4 = {
+    columns: [
+      {
+        id: "Name",
+        name: "Problem Name",
+        sort: false,
+        formatter: (problem_name) => Gridjs.html(`<input name="${problem_name}" class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" placeholder="Название проблемы" value="${problem_name}" type="text"  required>`),
+      },
+      {
+        id: "id",
+        name: "Save",
+        sort: false,
+        formatter: (prob_id) =>
+          Gridjs.html(`<div class="flex  ">
+                          <button onclick = "document.querySelector('#problem_form').action = '/directories/edit/prob/${prob_id}';document.querySelector('#problem_form').submit(); " class="btn h-8 w-8 p-0 text-primary hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25">
+                              <i class="fa fa-check"></i>
+                          </button>
+                      </div>`),
+      },
+      {
+        id: "delete_id",
+        name: "Delete",
+        sort: false,
+        formatter: (prob_id) =>
+          Gridjs.html(`<div class="flex  ">
+                          <button onclick = "document.querySelector('#problem_form').action = '/directories/delete/prob/${prob_id}';document.querySelector('#problem_form').submit(); " class="btn h-8 w-8 p-0 text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25">
+                              <i class="fa fa-trash-alt"></i>
+                          </button>
+                      </div>`),
+      },
+
+    ],
+
+    data: problem_info,
+    style: {
+      td: {
+        'padding':  '1.25rem',
+      },
+      table: {
+        'width': '800 pt',
+      }
+    },
+    autoSizeColumns : true,
+    pagination: {
+      enabled: true,
+      limit: 1,
+      summary: false
+    },
+    language: {
+       'pagination': {
+            'previous': 'Предыдущая ',
+            'next': 'Следующая'
+      },
+      noRecordsFound: 'Проблемы отсутствуют',
+    },
+
+  };
+
+  gridTable4._table = new Gridjs.Grid(gridConfig4).render(gridTable4);
+
+
+
+  //                 Таблица советов
+  //__________________________________________________
+  let advice_info = {{advice_info | tojson| safe }};
+
+
+  const gridTable5 = document.querySelector("#grid-table-5");
+  const gridConfig5 = {
+    columns: [
+      {
+        id: "Problem",
+        name: "Problem",
+        formatter: (cell) =>
+          Gridjs.html(
+            `<span class="text-slate-700 dark:text-navy-100 font-medium">${cell}</span>`
+          ),
+      },
+      {
+        id: "Advice",
+        name: "Advice",
+        sort: false,
+        formatter: (advice) => Gridjs.html(`<input name="${advice}" class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" placeholder="Совет" value="${advice}" type="text"  required>`),
+      },
+      {
+        id: "Save_id",
+        name: "Save",
+        sort: false,
+        formatter: (advice_id) =>
+          Gridjs.html(`<div class="flex  ">
+                          <button onclick = "document.querySelector('#advice_form').action = '/directories/edit/advice/${advice_id}';document.querySelector('#advice_form').submit(); " class="btn h-8 w-8 p-0 text-primary hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25">
+                              <i class="fa fa-check"></i>
+                          </button>
+                      </div>`),
+      },
+      {
+        id: "Delete_id",
+        name: "Delete",
+        sort: false,
+        formatter: (advice_id) =>
+          Gridjs.html(`<div class="flex  ">
+                          <button onclick = "document.querySelector('#advice_form').action = '/directories/delete/advice/${advice_id}';document.querySelector('#advice_form').submit(); " class="btn h-8 w-8 p-0 text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25">
+                              <i class="fa fa-trash-alt"></i>
+                          </button>
+                      </div>`),
+      },
+
+    ],
+
+    data: advice_info,
+    style: {
+      td: {
+        'padding':  '1.25rem',
+      },
+      table: {
+        'width': '800 pt',
+      }
+    },
+    search: true,
+    autoSizeColumns : true,
+    pagination: {
+      enabled: true,
+      limit: 3,
+      summary: false
+    },
+    language: {
+       'search': {
+            'placeholder': 'Поиск по проблеме...'
+       },
+       'pagination': {
+            'previous': 'Предыдущая ',
+            'next': 'Следующая'
+      },
+      noRecordsFound: 'Советы отсутствуют',
+    },
+
+  };
+
+  gridTable5._table = new Gridjs.Grid(gridConfig5).render(gridTable5);
+
+});
+
+
+
+</script>
+
+
+{%- endblock -%}

@@ -1,0 +1,37 @@
+{% extends 'indexleo.html' %}
+
+
+{% block page_title %} Objects {% endblock %} 
+
+
+
+{% block css %} 
+{% endblock %}
+
+{% block content %}
+
+  <div id="objects-wrapper">
+    
+    <div class="flex justify-center mb-2 spiner-wrapper">
+      <div class="spinner h-7 w-7 animate-spin rounded-full border-[3px] border-primary border-r-transparent dark:border-accent dark:border-r-transparent" >
+      </div>
+    </div>
+
+    <ul class="list-unstyled position-relative" id="objects-root">  
+    </ul>
+
+  </div>
+
+<div class="flex justify-center">
+      <a class="btn btn-primary py-2 px-5 mt-3" href="{{ url_for('object_api.object_create') }}">
+        Add new object
+    </a>
+</div>
+
+{% endblock %}
+
+{% block js %} 
+
+<script type="module" src="{{ url_for('.static', filename='js/objects/object_view.js')}}"></script>
+
+{% endblock %}

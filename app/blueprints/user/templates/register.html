@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Регистрация</title>
+
+    <link rel="stylesheet" href="{{url_for('static', filename='nth/css/app.css')}}" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+</head>
+
+<body class="flex items-center justify-center h-full">
+    <div class="lg:w-2/5 md:w-2/5 w-5/6 sm:w-3/5 ">
+
+        <form class="user" method="post">
+            <div class="card">
+                <div class="border-b border-slate-200 p-4 dark:border-navy-500 sm:px-5">
+                    <div class="flex items-center space-x-2">
+                        <h4 class="text-lg font-medium text-slate-700 dark:text-navy-100">
+                            Создание аккаунта
+                        </h4>
+                    </div>
+                </div>
+
+                <div class="space-y-4 p-4 sm:p-5">
+                    <label class="block">
+                        <span>Username</span>
+                        <input 
+                        name="username"
+                        class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" 
+                        placeholder="Username" type="text">
+                    </label>
+                    
+                    <label class="block">
+                        <span>Email</span>
+                        <input
+                        type="email" 
+                        name="email"
+                        class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                        placeholder="Email" type="text">
+                    </label>
+
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <label class="block">
+                            <span>Password</span>
+                            <input
+                            type="password"
+                            name="password" 
+                            class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" 
+                            placeholder="Password" type="text">
+                        </label>
+                       
+                        <label class="block">
+                            <span>Repeat password</span>
+                            <input
+                            type="password"
+                            name="passwordcheck"
+                            class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" 
+                            placeholder="Confirm password" type="text">
+                        </label>
+                    </div>
+                   
+                 
+                </div>
+                <div class="flex justify-center space-x-2 border-b border-slate-200 p-4 dark:border-navy-500">
+                    <button class="btn space-x-2 bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90">
+                        <span>Регистрация</span>
+                    </button>
+                </div>
+                <div  class="flex flex-col items-center p-4">
+                    <a href="">Forgot Password?</a>
+                    <a href="/login">Already have an account? Login!</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>

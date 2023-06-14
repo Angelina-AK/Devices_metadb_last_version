@@ -1,0 +1,114 @@
+{% extends 'objects/object_create.html' %}
+
+{% block page_title %} Edit object {% endblock %} 
+
+
+{% block css %} 
+
+<style>
+   
+
+    /* отступ расширяет окно и добавляет скролл, дизеблим скролл */
+    .disable-x-scroll{
+      overflow-x: hidden;
+    }
+</style>
+
+{% endblock %}
+
+<h1 >
+  {% block title %} 
+    Edit object {{ obj.name }} <span id="object_id"> (id: {{ obj.id }}) </span>
+  {% endblock %}
+ 
+</h1>
+
+{% block form_action %} {{ url_for('object_api.edit_object', id=obj.id ) }} {% endblock %}
+
+{% block object_name %}{{obj.name}}{% endblock %}
+
+{% block type_name %}{{obj.object_type.type_name or ''}}{% endblock %}
+
+{% block attributes %} 
+    {% if attributes_values %}
+      {% for atr_val in attributes_values %}
+        <div class="mb-1 row">
+          <div class="col-sm-3 ">
+            <label class="col-form-label" for="attribute">{{atr_val['atr_name']}}</label>
+          </div>
+        
+          <div class="col-sm-9">
+              <input class="form-control" name="attr-{{ atr_val['atr_name'] }}" placeholder="Set value" value="{{ atr_val['value'] }}">
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endblock %}
+
+
+  {% block parent_objects %}
+    {% if current_parents == []%}
+      <div class="col-12">
+        <div class="mb-1 row align-items-sm-center">
+        <div class="col-sm-3 ">
+            <label class="col-form-label" for="parent-obj">Current parent object </label>
+        </div>
+        <div class="col-sm-9 d-flex align-items-center">
+            <input class="form-control" list="browsers-obj" name="parent-obj" 
+            id="parent-obj" autocomplete="off" placeholder="Parent objects" value="">
+        </div>
+        <datalist id="browsers-obj">
+            {% for pp in possible_parents %}
+                <option value="{{pp}}">
+            {% endfor %}
+        </datalist>
+        </div>
+      </div>
+    {% else %}
+      {% for cp in current_parents %}
+        <div class="col-12">
+          <div class="mb-1 row align-items-sm-center">
+          <div class="col-sm-3 ">
+              <label class="col-form-label" for="parent-obj">Select parent object</label>
+          </div>
+          <div class="col-sm-9 d-flex align-items-center">
+              <input class="form-control" list="browsers-obj" name="parent-obj" 
+              id="parent-obj" autocomplete="off" placeholder="Parent objects" value="{{cp}}">
+          </div>
+          <datalist id="browsers-obj">
+              {% for pp in possible_parents %}
+                  <option value="{{pp}}">
+              {% endfor %}
+          </datalist>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endblock %}
+
+
+  {% block child_objects %} 
+    {% if childs != [] %}
+      {% for c in childs %}
+        <div class="col-12">
+          <div class="mb-1 row align-items-sm-center">
+            <div class="col-sm-3 ">
+              <label class="col-form-label" for="browser-obj">Current child </label>
+            </div>
+            <div class="col-sm-9 d-flex align-items-center">
+              <input class="form-control"  name="current-child"  autocomplete="off" value="{{c}}" placeholder="Child object">
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endblock %}
+
+
+{% block btn_text %} Save {% endblock %}
+
+{% block js %} 
+
+    <script type="module" src="../../static/template-assets/objects/js/objectEditing.js"></script>
+
+{% endblock %}

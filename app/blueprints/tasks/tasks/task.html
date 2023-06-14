@@ -1,0 +1,112 @@
+{% extends 'newbase.html' %}
+
+{% block content %}
+
+<div class="row">
+<div class="col-lg-6 mb-4">
+<!-- Approach -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Основная информация</h6>
+                                </div>
+                                <div class="card-body">
+                                    
+                                   
+    <div class="form-group">
+        <label for="name">Name</label>
+        <p class="form-control">{{ request.form['name'] or device['name'] }}</p>
+    </div>
+
+    <div class="form-group">
+        <label for="content">Key</label>
+        <p class="form-control">{{ request.form['key'] or device['key'] }}</p>
+    </div>
+   
+
+
+
+                                </div>
+                            </div>
+
+
+
+</div>
+
+<div class="col-lg-6 mb-4">
+<!-- Approach -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Log</h6>
+                                </div>
+                                <div class="card-body">
+                                <p>Создано: {{ device['created'] }}</p>
+                                <p>Обновлено: {{ device['updated'] }}</p>
+                                {% if device.records[-1] is defined %}
+                                <p>Последняя активность: {{ device.records[-1].created }}</p>
+                               {% else %}
+                                <p>Последняя активность: Отсутствует</p>
+                               {% endif %}
+                                </div>
+                            </div>
+</div>
+
+</div>
+
+<div class="row">
+<div class="col-lg-6 mb-4">
+<!-- Approach -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Потоки</h6>
+                                </div>
+                                <div class="card-body">
+                                   
+                                   {% for flow in flows %}
+
+
+
+<div class="input-group mb-3">
+<p class="form-control">{{ flow['name'] }} </p>
+
+    </div>
+ {% endfor %}
+
+
+
+                                </div>
+                            </div>
+
+</div>
+<div class="col-lg-6 mb-4">
+<!-- Approach -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Параметры</h6>
+                                </div>
+                                <div class="card-body">
+                                    
+<form action="/devices/{{device.id}}/setparam" method="POST">
+
+{% for param in params %}
+
+<div class="input-group mb-3">
+  <span class="input-group-text" id="basic-addon1">{{ param['name'] }}</span>
+  <p class="form-control">{{ param['value']}}</p> 
+
+
+</div>
+
+
+ {% endfor %}
+
+
+
+
+                                </div>
+                            </div>
+
+
+
+</div>
+</div>
+{% endblock %}

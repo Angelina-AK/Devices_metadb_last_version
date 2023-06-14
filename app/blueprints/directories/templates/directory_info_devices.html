@@ -1,0 +1,202 @@
+{%- extends 'indexleo.html' -%}
+
+{%- block content -%}
+
+    <! Подключение конфигурационного файла по ссылки>
+    <script src="https://lineone.piniastudio.com/js/app.js"></script>
+
+
+
+<!--           Отображение мгновенных сообщений -->
+<!-- -------------------------------------------------------->
+{% for cat,msg in get_flashed_messages(True) %}
+  <div class="alert flex rounded-full bg-{{cat}}/10 py-4 px-4 text-{{cat}} dark:bg-{{cat}}/15 sm:px-5">
+      {{msg}}
+  </div>
+  <br>
+{% endfor %}
+
+
+<!--           Карточка уже анализируемых устройств        -->
+<!-- -------------------------------------------------------->
+<div class="card pb-4 my-3 sm:px-5">
+  <div class="my-3 flex h-8 items-center justify-between px-4 sm:px-5">
+    <!-- Заголовок страницы-->
+    <h2 class="font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100 lg:text-base">
+      {{title1}}
+    </h2>
+  </div>
+
+    <!-- Список анализируемых устройств (полностьтю заполняется js) -->
+    <div id="grid-table-4"></div>
+
+
+</div>
+
+
+<!--      Карточка добавления устройств для анализа        -->
+<!-- -------------------------------------------------------->
+<div class="card pb-4 my-3 sm:px-5">
+  <div class="my-3 flex h-8 items-center justify-between px-4 sm:px-5">
+    <!-- Заголовок страницы-->
+    <h2 class="font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100 lg:text-base">
+      {{title2}}
+    </h2>
+  </div>
+
+    <!-- Добавление устройства у списку анализируемых-->
+    <div id="grid-table-5"></div>
+
+</div>
+
+
+
+<script>
+ const onLoad = () => {
+
+
+  //      Таблица уже анализируемых устройств
+  //___________________________________________________
+  let device_info = {{ device_info | tojson| safe }};
+
+  console.log(device_info);
+
+
+  const gridTable4 = document.querySelector("#grid-table-4");
+  const gridConfig4 = {
+    columns: [
+      {
+        id: "Device",
+        name: "Device",
+        formatter: (cell) => Gridjs.html(`<span class="mx-2">${cell}</span>`),
+      },
+      {
+        id: "Sensors",
+        name: "Sensors",
+        formatter: (cell) => Gridjs.html(`<span class="mx-2">${cell}</span>`),
+      },
+      {
+        id: "id",
+        name: "Delete from list",
+        sort: false,
+        formatter: (device_id) =>
+          Gridjs.html(`<div class="flex justify-center space-x-2">
+                          <a href="/directories/delete/device/${device_id}/from/{{dir_id}}" class="btn h-8 w-8 p-0 text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25">
+                              <i class="fa fa-trash-alt"></i>
+                          </a>
+                      </div>`),
+      },
+
+    ],
+
+    data: device_info,
+    sort: true,
+    style: {
+      td: {
+        'white-space': 'pre-wrap',
+        width: '1pt'
+      }
+    },
+    search: true,
+    autoSizeColumns : true,
+    pagination: {
+      enabled: true,
+      limit: 3,
+      summary: false
+    },
+    language: {
+       'search': {
+            'placeholder': 'Поиск...'
+       },
+       'pagination': {
+            'previous': 'Назад ',
+            'next': 'Вперед'
+      },
+      noRecordsFound: 'Анализируемые устройства отсутствуют',
+    },
+
+  };
+
+  gridTable4._table = new Gridjs.Grid(gridConfig4).render(gridTable4);
+
+
+
+  //    Таблица устройств для добавления к анализу
+  //___________________________________________________
+  let devices_to_add_info = {{ devices_to_add_info | tojson| safe }};
+
+  console.log(devices_to_add_info);
+
+
+  const gridTable5 = document.querySelector("#grid-table-5");
+  const gridConfig5 = {
+    columns: [
+      {
+        id: "Device",
+        name: "Device",
+        formatter: (cell) => Gridjs.html(`<span class="mx-2">${cell}</span>`),
+      },
+      {
+        id: "Sensors",
+        name: "Sensors",
+        formatter: (cell) => Gridjs.html(`<span class="mx-2">${cell}</span>`),
+      },
+      {
+        id: "id",
+        name: "Add to analysis",
+        sort: false,
+        formatter: (device_id) =>
+          Gridjs.html(`<div class="flex justify-center space-x-2">
+                          <a href="/directories/add/device/${device_id}/to/{{dir_id}}" class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
+                              <i class="fa fa-plus"></i>
+                          </a>
+                      </div>`),
+      },
+
+    ],
+
+    data: devices_to_add_info,
+    sort: true,
+    style: {
+      td: {
+        'white-space': 'pre-wrap',
+        width: '1pt'
+      }
+    },
+    search: true,
+    autoSizeColumns : true,
+    pagination: {
+      enabled: true,
+      limit: 3,
+      summary: false
+    },
+    language: {
+       'search': {
+            'placeholder': 'Поиск...'
+       },
+       'pagination': {
+            'previous': 'Назад ',
+            'next': 'Вперед'
+      },
+      noRecordsFound: 'Устройства для добавления к анализу отсутствуют',
+    },
+
+  };
+
+  gridTable5._table = new Gridjs.Grid(gridConfig5).render(gridTable5);
+
+
+};
+
+window.addEventListener("app:mounted", onLoad, { once: true });
+
+</script>
+
+
+
+<! Запуск работы Alpine >
+<script>
+      window.addEventListener("DOMContentLoaded", () => Alpine.start());
+</script>
+
+{%- endblock -%}

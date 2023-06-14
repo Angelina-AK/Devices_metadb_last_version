@@ -1,0 +1,41 @@
+<div class="grid grid-cols-4 gap-4">
+    <div class="card rounded-lg px-4 py-4 shadow-lg shadow-default/50 dark:text-navy-100 dark:bg-navy-700 dark:shadow-accent/50 sm:px-5">
+        <div class="flex justify-between">
+          <h2 class="text-lg font-medium tracking-wide line-clamp-1">
+            <a href="{{ url_for('devices_api.devices_view') }}">
+                Devices
+            </a>
+          </h2>
+
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+          </svg>
+
+        </div>
+        <div class="pt-2">
+          <p>
+            {{count_devices}}
+          </p>
+        </div>
+    </div>
+    
+    <div class="card rounded-lg px-4 py-4 shadow-lg shadow-default/50 dark:text-navy-100 dark:bg-navy-700 dark:shadow-accent/50 sm:px-5">
+        <div class="flex justify-between">
+            <h2 class="text-lg font-medium tracking-wide line-clamp-1">
+            <a href="{{ url_for('records_api.records_view') }}">
+                Records
+            </a>
+            </h2>
+        
+            <svg xmlns="http://www.w3.org/2000/svg"  class="h-5 w-5 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path d="M22,24H2V2.5C2,1.122,3.122,0,4.5,0h15c1.378,0,2.5,1.122,2.5,2.5V24Zm-19-1H21V2.5c0-.827-.673-1.5-1.5-1.5H4.5c-.827,0-1.5,.673-1.5,1.5V23ZM18,5h-7v1h7v-1Zm0,6h-7v1h7v-1Zm0,6h-7v1h7v-1ZM9,7h-3v-3h3v3Zm-2-1h1v-1h-1v1Zm2,7h-3v-3h3v3Zm-2-1h1v-1h-1v1Zm2,7h-3v-3h3v3Zm-2-1h1v-1h-1v1Z"/>
+            </svg>
+
+        </div>
+        <div class="pt-2">
+            <p>
+            {{count_records}}
+            </p>
+        </div>
+    </div>
+</div>

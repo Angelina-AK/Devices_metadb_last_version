@@ -1,0 +1,336 @@
+{% extends 'newbase.html' %}
+{% block css %}
+<script src="/static/codemirror/codemirror.js"></script>
+<link href="/static/codemirror/codemirror.css" rel="stylesheet">
+<script src="/static/codemirror/javascript.js"></script>
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@latest/dist/leaflet.css"/>
+   <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css" />
+<script src="https://unpkg.com/leaflet@latest/dist/leaflet.js"></script>
+<style type="text/css">
+
+   .map {
+  height: 500px;
+}
+
+</style>
+
+{% endblock %}
+{% block content %}
+
+
+
+<div class="row">
+	<div class="col-lg-6 mb-4">
+		<!-- Approach -->
+		<div class="card shadow mb-4">
+			<div class="card-header py-3">
+				<h6 class="m-0 font-weight-bold text-primary">Основная информация</h6> </div>
+			<div class="card-body">
+				<form method="post">
+					<div class="form-group">
+						<label for="name">Name</label>
+						<input type="text" name="name" placeholder="Device name" class="form-control" value="{{ request.form['name'] or device['name'] }}"> </input>
+					</div>
+					<div class="form-group">
+						<label for="content">Key</label>
+						<input type="text" name="key" placeholder="Device key" class="form-control" value="{{ request.form['key'] or device['key'] }}"> </input>
+					</div>
+					<div class="form-group">
+						<button type="submit" class="btn btn-primary">Save</button>
+					</div>
+				</form>
+				<form action="{{ url_for('devices_api.device_delete', id=device['id']) }}" method="POST">
+					<input type="submit" value="Delete Device" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this device?')"> </form>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-6 mb-4">
+		<!-- Approach -->
+		<div class="card shadow mb-4">
+			<div class="card-header py-3">
+				<h6 class="m-0 font-weight-bold text-primary">Log</h6> </div>
+			<div class="card-body">
+				<p>Создано: {{ device['created']  | datetime_user_tz}}</p>
+				<p>Обновлено: {{ device['updated']  | datetime_user_tz}}</p> {% if device.records[-1] is defined %}
+				<p>Последняя активность: {{ device.records[-1].created  | datetime_user_tz }}</p> {% else %}
+				<p>Последняя активность: Отсутствует</p> {% endif %} </div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-lg-6 mb-4">
+		<!-- ПОТОКИ -->
+		<div class="card shadow mb-4">
+			<div class="card-header py-3">
+				<h6 class="m-0 font-weight-bold text-primary">Потоки</h6> </div>
+			<div class="card-body"> {% for flow in flows %}
+				<div class="input-group mb-3">
+					<p class="form-control">{{ flow['name'] }} </p>
+					<a href="{{ url_for('devices_api.device_flow_remove', id=device['id'], flowid=flow['id']) }}"> <span class="btn btn-outline-secondary">Remove</span> </a>
+				</div> {% endfor %}
+				<hr>
+				<form method="post" action="/devices/{{device.id}}/addflow">
+					<div class="form-group">
+						<div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1">Add</span>
+							<input type="text" name="name" placeholder="Flow name" class="form-control" value="{{ request.form['name']  }}"> </input>
+							<button type="submit" class="btn btn-outline-secondary">Add</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-6 mb-4">
+		<!-- ПАРАМЕТРЫ -->
+		<div class="card shadow mb-4">
+			<div class="card-header py-3">
+				<h6 class="m-0 font-weight-bold text-primary">Параметры</h6> </div>
+			<div class="card-body">
+				<form action="/devices/{{device.id}}/setparam" method="POST"> {% for param in params %}
+					<div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1">{{ param['name'] }}</span>
+						<input type="text" class="form-control" name="paramval" placeholder="" aria-label="Set" aria-describedby="basic-addon1" value="{{ param['value']}}"> </input>
+						<a href="{{ url_for('devices_api.device_param_remove', id=device['id'], paramid=param['id']) }}"> <span class="btn btn-outline-secondary">Remove</span> </a>
+					</div> {% endfor %}
+					<input type="submit" value="Save" class="btn btn-success btn-sm"> </form>
+				<hr>
+				<form method="post" action="/devices/{{device.id}}/addparam">
+					<div class="form-group">
+						<div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1">Add</span>
+							<input type="text" name="name" placeholder="Param name" class="form-control" value="{{ request.form['name']  }}"> </input>
+							<button type="submit" class="btn btn-outline-secondary">Add</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-6 mb-4">
+		<!-- sensonrs -->
+		<div class="card shadow mb-4">
+			<div class="card-header py-3">
+				<h6 class="m-0 font-weight-bold text-primary">Sensors</h6> </div>
+			<div class="card-body"> {% for sensor in device["sensors"] %}
+				<div class="input-group mb-3">
+					<p class="form-control">{{ sensor['name'] }} </p>
+					<a href="{{ url_for('devices_api.device_sensor_edit', id=sensor['id'])}}"> <span class="btn btn-outline-secondary">edit</span> </a>
+				</div> {% endfor %}
+				<hr>
+				<a href = "{{url_for('devices_api.device_sensor_add', id=device.id)}}">
+            New sensor
+        </a>
+
+
+			</div>
+		</div>
+	</div>
+
+</div>
+
+
+<div class="row">
+	<div class="col-lg-12">
+	<form method="post" action="/devices/{{device.id}}/savedecoder">
+	<textarea placeholder="Enter HTML Source Code" name = "code" id="codeTextarea">{{ decoder  }}</textarea>
+	<button type="submit" class="btn btn-outline-secondary">Save</button>
+	</form>
+	</div>
+</div>
+
+<script>
+  var editor = CodeMirror.fromTextArea(codeTextarea, {
+    lineNumbers: true,
+    mode:  "javascript"
+  });
+</script>
+
+<div class="row">
+<div class="col-lg-12">
+	{% if floor.floor %}
+
+	<form method="post" action="/devices/{{device.id}}/setfloor">
+
+		<select id="groups">
+			<option data-group='SHOW' value='-1'>-- Select --</option>
+			{% for building in buildings %}
+			{% if floor.floor.building.id ==  building.id %}
+			<option selected value = '{{ building.id }}'>{{ building.name }}</option>
+			{% else  %}
+			<option value = '{{ building.id }}'>{{ building.name }}</option>
+			{% endif  %}
+
+	   {% endfor %}
+
+<select>
+
+<select name="floor_id"  id="sub_groups">
+    <option data-group='SHOW' value='-1'>-- Select --</option>
+
+	{% for building in buildings %}
+	{% for floori in building.floors %}
+
+	{% if floor.floor.id ==  floori.id %}
+	<option selected data-group='{{ building.id }}' value='{{ floori.id }}'>{{ floori.name }}</option>
+	{% else  %}
+
+	<option data-group='{{ building.id }}' value='{{ floori.id }}'>{{ floori.name }}</option>
+	{% endif  %}
+
+	{% endfor %}
+	   {% endfor %}
+
+<select>
+
+
+	<input type="hidden" id = "floorname" name="floor_idt" placeholder="Param name" class="form-control" value="{{ floor.floor.id }}"> </input>
+<input type="hidden" id = "lng" name="lng" placeholder="Param name" class="form-control" value="{{ request.form['lng']  }}"> </input>
+<input type="hidden" id = "lat" name="lat" placeholder="Param name" class="form-control" value="{{ request.form['lat']  }}"> </input>
+
+
+	<button type="submit" class="btn btn-outline-secondary">Save</button>
+	</form>
+
+<div class = "map" id="map"></div>
+
+
+	</div>
+</div>
+<script>
+
+// center of the map
+var center = [0,0];
+
+// Create the map
+var map = L.map('map', {
+    minZoom: 5,
+    maxZoom: 10,
+    center: [0, 0],
+    zoom: 8,
+    crs: L.CRS.Simple,
+});
+
+var mark = [{{ floor["lat"]}}, {{floor["lng"]}} ];
+
+// add a marker in the given location
+var mmarker = L.marker(mark, {draggable:'true'}).addTo(map);
+
+
+  var w = {{ floor.floor.width }};
+    var h = {{ floor.floor.height }};
+   var url = '/static/upload/{{ floor.floor.image }}';
+
+
+var southWest = map.unproject([0, h], map.getMaxZoom() - 1);
+var northEast = map.unproject([w, 0], map.getMaxZoom() - 1);
+var bounds = new L.LatLngBounds(southWest, northEast);
+
+
+map.setMaxBounds(bounds);
+L.imageOverlay(url, bounds).addTo(map);
+
+mmarker.on('dragend', function(event){
+
+            var position = mmarker.getLatLng();
+
+           lng.value = position.lng;
+           lat.value = position.lat;
+    });
+
+//alert(myMarker.getLatLng());
+
+</script>
+
+
+
+
+
+{% else %}
+
+<div class="row">
+<div class="col-lg-6">
+
+<form method="post" action="/devices/{{device.id}}/setfloor">
+
+
+
+
+		<select id="groups">
+			<option data-group='SHOW' value='-1'>-- Select --</option>
+			{% for building in buildings %}
+<option value = '{{ building.id }}'>{{ building.name }}</option>
+	   {% endfor %}
+
+<select>
+
+<select name="floor_id"  id="sub_groups">
+    <option data-group='SHOW' value='-1'>-- Select --</option>
+
+	{% for building in buildings %}
+	{% for floori in building.floors %}
+	<option data-group='{{ building.id }}' value='{{ floori.id }}'>{{ floori.name }}</option>
+	{% endfor %}
+	   {% endfor %}
+
+
+<select>
+
+
+	<input type="hidden" id = "floorname"  name="floor_idi" placeholder="Param name" class="form-control" value=""> </input>
+<input type="hidden"  name="lng" placeholder="Param name" class="form-control" value="0"> </input>
+<input type="hidden"  name="lat" placeholder="Param name" class="form-control" value="0"> </input>
+
+
+	<button type="submit" class="btn btn-outline-secondary">Save</button>
+	</form>
+</div>
+</div>
+{% endif %}
+
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+ $(function(){
+    $('#groups').on('change', function(){
+
+        var val = $(this).val();
+        var sub = $('#sub_groups');
+        if(val == -1)
+         floorname.value = -1;
+
+        $('option', sub).filter(function(){
+            if (
+                 $(this).attr('data-group') === val
+              || $(this).attr('data-group') === 'SHOW'
+            ) {
+              if ($(this).parent('span').length) {
+                $(this).unwrap();
+              }
+            } else {
+              if (!$(this).parent('span').length) {
+                $(this).wrap( "<span>" ).parent().hide();
+              }
+            }
+        });
+    });
+    $('#groups').trigger('change');
+});
+
+$(function(){
+    $('#sub_groups').on('change', function(){
+	var val = $(this).val();
+
+    floorname.value = val;
+    if(val == -1)
+         floorname.value = -1;
+});
+});
+</script>
+{% endblock %}

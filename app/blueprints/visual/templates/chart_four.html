@@ -1,0 +1,129 @@
+{% extends 'indexleo.html' %}
+
+{% block css %}
+<style type="text/css">
+    .chart_height {
+        min-height: 50vh;
+    }
+
+    .n1 {
+        background-color: #168cbe;
+    }
+
+    .n2 {
+        background-color: #9c51ab;
+
+    }
+
+    .n3 {
+        background-color: #ec9a1f;
+
+    }
+
+    .n4 {
+        background-color: #a45e5e;
+
+    }
+
+    .n5 {
+        background-color: rgb(21, 54, 100);
+
+
+    }
+
+    .n6 {
+        background-color: rgb(42, 102, 14);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <input type="text" value="{{device_id}}" id="device_id" hidden>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-5">
+        {%- for sensor in sensors -%}
+            <div
+                class="badge flex flex-col n{{loop.index}} text-white shadow-soft n{{loop.index}}/50 dark:n{{loop.index}} dark:shadow-accent/50"
+                id="lastval{{ sensor['id'] }}"
+            >
+                <span class="text-center">{{ sensor['name'] }}</span>
+                <span id="for-data" class="text-center mt-1 text-2xl"></span>
+            </div>
+        {%- endfor -%}
+    </div>
+
+    <div class="grid md:grid-cols-2 grid-cols-1 gap-4">
+        <div class="card px-4 pb-4 sm:px-5 w-full">
+            <div class="my-3  h-8 items-center justify-between">
+                <h2 class="font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100 lg:text-base">
+                    Количество CO2
+                </h2>
+                <span>Последние 7 дней (ауд. {{room}})</span>
+            </div>
+            <div class="">
+                <div class="mt-5">
+                    <div>
+                        <div class="flex w-full h-full" id="demoChart1"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card px-4 pb-4 sm:px-5 w-full">
+            <div class="my-3  h-8 items-center justify-between">
+                <h2 class="font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100 lg:text-base">
+                    Температура воздуха
+                </h2>
+                <span>Последние 7 дней (ауд. {{room}})</span>
+            </div>
+            <div class="">
+                <div class="mt-5">
+                    <div>
+                        <div id="demoChart2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card px-4 pb-4 sm:px-5 w-full">
+            <div class="my-3  h-8 items-center justify-between">
+                <h2 class="font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100 lg:text-base">
+                    Влажность
+                </h2>
+                <span>Последние 7 дней (ауд. {{room}})</span>
+            </div>
+            <div class="">
+                <div class="mt-5">
+                    <div>
+                        <div id="demoChart3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card px-4 pb-4 sm:px-5 w-full">
+            <div class="my-3  h-8 items-center justify-between">
+                <h2 class="font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100 lg:text-base">
+                    Уровень шума
+                </h2>
+                <span>Последние 7 дней (ауд. {{room}})</span>
+            </div>
+            <div class="">
+                <div class="mt-5">
+                    <div>
+                        <div id="demoChart4"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{%- block js -%}
+    <script>
+        {{ decoder_format.value | safe }}
+    </script>
+
+    <script src="{{url_for('visual_api.static', filename='js/components-apexcharts.js')}}" defer></script>
+{%- endblock -%}

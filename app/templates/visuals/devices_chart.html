@@ -1,0 +1,71 @@
+{% extends 'newbase.html' %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+
+
+
+<!-- Main Content -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+
+                    <p class="mb-4"></p>
+
+                    <!-- Content Row -->
+                    <div class="row">
+
+                        <div class="col-xl-8 col-lg-7">
+
+                          {% for device in devices %}
+                         <h2>{{ device['name'] }}</h2>
+                            <a href = "{{ url_for('visual_api.chart_view_all', device_id=device['id'])}}"> <p>All multi</p></a>
+                            <a href = "{{ url_for('visual_api.chart_view_all_new', device_id=device['id'])}}"> <p>All in one</p></a>
+                            <a href = "{{ url_for('visual_api.chart_four', device_id=device['id'])}}"> <p>Four graphics</p></a>
+                            {% for sensor in device.sensors %}
+                             <a href = "{{ url_for('visual_api.chart_view', device_id=device['id'], sensor_id=sensor['id']) }}">
+            <span class="badge badge-primary">{{ sensor['name'] }}</span>
+        </a>
+
+
+                             {% endfor %}
+
+
+
+        <hr>
+    {% endfor %}
+
+
+
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+
+
+
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+

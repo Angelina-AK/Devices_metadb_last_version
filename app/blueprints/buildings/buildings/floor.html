@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block css %}
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@latest/dist/leaflet.css"/>
+   <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css" />
+<script src="https://unpkg.com/leaflet@latest/dist/leaflet.js"></script>
+<style type="text/css">
+
+   .map {
+  height: 500px;
+}
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+    <span class="badge badge-primary">{{ floor['created'] }}</span>
+    <p>Description: {{ floor['description'] }}</p>
+
+
+
+<div class = "map" id="map"></div>
+
+<script>
+
+// center of the map
+var center = [0,0];
+
+// Create the map
+var map = L.map('map', {
+    minZoom: 5,
+    maxZoom: 10,
+    center: [0, 0],
+    zoom: 8,
+    crs: L.CRS.Simple,
+});
+
+
+
+// add a marker in the given location
+
+
+
+  var w = {{ floor['width'] }};
+    var h = {{ floor['height'] }};
+   var url = '/static/upload/{{ floor['image'] }}';
+
+
+var southWest = map.unproject([0, h], map.getMaxZoom() - 1);
+var northEast = map.unproject([w, 0], map.getMaxZoom() - 1);
+var bounds = new L.LatLngBounds(southWest, northEast);
+
+
+map.setMaxBounds(bounds);
+L.imageOverlay(url, bounds).addTo(map);
+
+
+
+
+</script>
+
+
+{% endblock %}

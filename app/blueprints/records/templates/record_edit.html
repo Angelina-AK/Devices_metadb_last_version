@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %} Edit "{{ payload['title'] }}" {% endblock %}</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label for="device_id">Title</label>
+        <input type="text" name="title" placeholder="device_id"
+               class="form-control"
+               value="{{ request.form['device_id'] or payload['device_id'] }}">
+        </input>
+    </div>
+
+    <div class="form-group">
+        <label for="name">Content</label>
+        <textarea name="content" placeholder="payload content"
+                  class="form-control">{{ request.form['name'] or payload['name'] }}</textarea>
+    </div>
+    <div class="form-group">
+        <label for="content">Content</label>
+        <textarea name="value" placeholder="payload content"
+                  class="form-control">{{ request.form['value'] or payload['value'] }}</textarea>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>
+<hr>
+
+<form action="{{ url_for('records_api.record_delete', id=payload['id']) }}" method="POST">
+    <input type="submit" value="Delete payload"
+            class="btn btn-danger btn-sm"
+            onclick="return confirm('Are you sure you want to delete this record?')">
+</form>
+
+{% endblock %}

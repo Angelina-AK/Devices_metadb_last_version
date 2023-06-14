@@ -1,0 +1,50 @@
+{% extends 'indexleo.html' %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+    {% for device in devices %}
+        <div>
+            <h2 class="text-2xl">{{ device['name'] }}</h2>
+
+            <div class="flex flex-col items-start">
+                <div class="badge space-x-2.5 text-primary dark:text-accent-light">
+                    <div class="h-2 w-2 rounded-full bg-current"></div>
+                    <a href = "{{ url_for('visual_api.chart_view_all', device_id=device['id'])}}">All multi</a>
+                </div>
+
+                <div class="badge space-x-2.5 text-primary dark:text-accent-light">
+                    <div class="h-2 w-2 rounded-full bg-current"></div>
+                    <a href = "{{ url_for('visual_api.chart_view_all_new', device_id=device['id'])}}">All in one</a>
+                </div>
+
+                <div class="badge space-x-2.5 text-primary dark:text-accent-light">
+                    <div class="h-2 w-2 rounded-full bg-current"></div>
+                    <a href = "{{ url_for('visual_api.chart_four', device_id=device['id'])}}">Four graphics</a>
+                </div>
+            </div>
+        </div>
+
+        {% for sensor in device.sensors %}
+            <a href = "{{ url_for('visual_api.chart_view', device_id=device['id'], sensor_id=sensor['id']) }}">
+                <span class="badge badge-primary">{{ sensor['name'] }}</span>
+            </a>
+        {% endfor %}
+
+        <div class="my-4 h-px bg-slate-200 dark:bg-navy-500"></div>
+    {% endfor %}
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+

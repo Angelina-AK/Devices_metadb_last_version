@@ -1,0 +1,679 @@
+{% extends 'newbase.html' %}
+
+{% block css %}
+
+
+
+    <!-- END: Vendor CSS-->
+ <link rel="stylesheet" type="text/css" href="/static/app-assets/vendors/css/maps/leaflet.min.css">
+ <link rel="stylesheet" type="text/css" href="/static/app-assets/css/plugins/maps/map-leaflet.min.css">
+
+<style type="text/css">
+
+   .map {
+  height: 500px;
+}
+
+</style>
+
+
+
+{% endblock %}
+
+{% block content %}
+
+
+<section id="dashboard-ecommerce">
+  <div class="row match-height">
+
+
+    <div class="row">
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="card">
+                                <div class="card-body d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <h3 class="fw-bolder mb-75">{{ device["sensors"]|length }}</h3>
+                                        <span>Сенсоров</span>
+                                    </div>
+                                    <div class="avatar bg-light-primary p-50">
+                                        <span class="avatar-content">
+                                            <i data-feather="activity" class="font-medium-4"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="card">
+                                <div class="card-body d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <h3 id = "countpackets" class="fw-bolder mb-75">{{ device["payload"]|length }}</h3>
+                                        <span>Пакетов</span>
+                                    </div>
+                                    <div class="avatar bg-light-danger p-50">
+                                        <span class="avatar-content">
+                                            <i data-feather="database" class="font-medium-4"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="card">
+                                <div class="card-body d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <h3 id = "countevents" class="fw-bolder mb-75"></h3>
+                                        <span>Событий</span>
+                                    </div>
+                                    <div class="avatar bg-light-success p-50">
+                                        <span class="avatar-content">
+                                            <i data-feather="tag" class="font-medium-4"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="card">
+                                <div class="card-body d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <h3 id="lastupdate" class="fw-bolder mb-75"></h3>
+                                        <span>Обновлено</span>
+                                    </div>
+                                    <div class="avatar bg-light-warning p-50">
+                                        <span class="avatar-content">
+                                            <i data-feather="clock" class="font-medium-4"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+  </div>
+
+  <div class="row match-height">
+
+
+
+
+
+
+
+<!-- Layer Control Starts -->
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">Расположение устройства</h4>
+        </div>
+        <div class="card-body">
+            <div class = "leaflet-map" id="map"></div>
+
+        </div>
+      </div>
+    </div>
+    <!-- /Layer Control Ends -->
+  </div>
+</div>
+
+	<input type="hidden" id = "floorname" name="floor_idt" placeholder="Param name" class="form-control" value="{{ floor.floor.id }}"> </input>
+  <input type="hidden" id = "lng" name="lng" placeholder="Param name" class="form-control" value="{{ request.form['lng']  }}"> </input>
+  <input type="hidden" id = "lat" name="lat" placeholder="Param name" class="form-control" value="{{ request.form['lat']  }}"> </input>
+
+
+
+<div class="row match-height">
+    <!-- Company Table Card -->
+    <div class="row" id="basic-table">
+  <div class="col-xl-8 col-md-6 col-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Данные с устройства</h4>
+      </div>
+      <div class="card-body">
+
+      </div>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Сенсор</th>
+              <th>Значение</th>
+
+              <th>Статус</th>
+              <th>Действия</th>
+            </tr>
+          </thead>
+          <tbody>
+
+          {% for sensor in device["sensors"] %}
+
+
+          <tr>
+              <td>
+
+                <span class="fw-bold">  {{ sensor['name'] }}</span>
+              </td>
+              <td id="lastval{{ sensor['id'] }}">loading</td>
+
+              <td><span id="lastvalcolor{{ sensor['id'] }}" class="badge rounded-pill  me-1">В норме</span></td>
+              <td>
+                <div class="dropdown">
+                  <button type="button" class="btn btn-sm dropdown-toggle hide-arrow py-0" data-bs-toggle="dropdown">
+                    <i data-feather="more-vertical"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-end">
+                    <a class="dropdown-item" href="#">
+                      <i data-feather="edit-2" class="me-50"></i>
+                      <span>Edit</span>
+                    </a>
+                    <a class="dropdown-item" href="#">
+                      <i data-feather="trash" class="me-50"></i>
+                      <span>Delete</span>
+                    </a>
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+          {% endfor %}
+
+
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+<!-- Basic Tables end -->
+    <!--/ Company Table Card -->
+
+    <!-- Transaction Card -->
+    <div class="col-lg-4 col-md-6 col-12">
+      <div class="card card-transaction">
+        <div class="card-header">
+          <h4 class="card-title">События</h4>
+          <div class="dropdown chart-dropdown">
+            <i data-feather="more-vertical" class="font-medium-3 cursor-pointer" data-bs-toggle="dropdown"></i>
+            <div class="dropdown-menu dropdown-menu-end">
+              <a class="dropdown-item" href="#">Last 28 Days</a>
+              <a class="dropdown-item" href="#">Last Month</a>
+              <a class="dropdown-item" href="#">Last Year</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body" id="eventsdiv">
+
+
+
+        </div>
+
+      </div>
+    </div>
+    <!--/ Transaction Card -->
+
+
+
+
+  </div>
+
+</div>
+</section>
+
+
+
+
+
+{% endblock %}
+
+{% block js %}
+
+
+
+<script>
+    {{decoder|safe}}
+</script>
+
+<script>
+
+var localcountpacket = 0;
+
+var cevents = 0;
+
+{% for payload in device.payload %}
+{% if  loop.last %}
+    var str = decoder({{payload.value|safe}});
+    localcountpacket = str.data["count"];
+{% endif %}
+
+{% endfor %}
+
+
+
+
+
+var eventsdiv = document.getElementById("eventsdiv");
+
+eventsdiv.innerHTML = "";
+
+
+{% for sensor in device.sensors %}
+
+var fixeddata = str.data["{{sensor['decode_key']}}"];
+
+var lastval = document.getElementById("lastval{{sensor['id']}}");
+
+lastval.innerHTML = fixeddata;
+
+var colordiv = document.getElementById("lastvalcolor{{ sensor['id'] }}");
+
+dtp = str.created;
+dtp = moment.tz(dtp, "UTC");
+dtp.tz('{{current_user.timezone}}').format();
+dtp = dtp.format('DD.MM.YYYY, HH:mm:ss');
+
+
+document.getElementById("lastupdate").innerHTML = dtp;
+
+colordiv.classList.remove("badge-light-success");
+colordiv.classList.remove("badge-light-warning");
+
+if( "{{sensor['decode_key']}}" == "temperature")
+{
+if(fixeddata > 25)
+{
+colordiv.classList.add("badge-light-warning");
+colordiv.innerHTML = "Внимание";
+}
+else
+{
+colordiv.classList.add("badge-light-success");
+colordiv.innerHTML = "В норме";
+}
+}
+
+else if( "{{sensor['decode_key']}}" == "co2")
+{
+if(fixeddata > 1000)
+{
+cevents +=3;
+colordiv.classList.add("badge-light-warning");
+colordiv.innerHTML = "Внимание";
+
+var newdiv = document.createElement('div');
+newdiv.className = "transaction-item";
+
+        var textt = '   <div class="d-flex"><div class="avatar bg-light-primary rounded float-start">';
+         textt+= ' <div class="avatar-content"> <i data-feather="pocket" class="avatar-icon font-medium-3"></i>';
+         textt+= '   </div> </div>';
+         textt+= '   <div class="transaction-percentage"><h6 class="transaction-title">Проверить систему вентиляции</h6>';
+         textt+= '    <small>{{sensor['name']}}</small></div></div>';
+
+  newdiv.innerHTML = textt;
+ eventsdiv.append(newdiv);
+
+
+var newdiv = document.createElement('div');
+newdiv.className = "transaction-item";
+
+
+          var textt = '    <div class="d-flex"><div class="avatar bg-light-primary rounded float-start">';
+         textt+= ' <div class="avatar-content"> <i data-feather="pocket" class="avatar-icon font-medium-3"></i>';
+         textt+= '   </div> </div>';
+         textt+= '   <div class="transaction-percentage"><h6 class="transaction-title">Проветрить помещение</h6>';
+         textt+= '    <small>{{sensor['name']}}</small></div></div>';
+
+
+  newdiv.innerHTML = textt;
+ eventsdiv.append(newdiv);
+
+var newdiv = document.createElement('div');
+newdiv.className = "transaction-item";
+
+
+        var textt = '   <div class="d-flex"><div class="avatar bg-light-primary rounded float-start">';
+         textt+= ' <div class="avatar-content"> <i data-feather="pocket" class="avatar-icon font-medium-3"></i>';
+         textt+= '   </div> </div>';
+         textt+= '   <div class="transaction-percentage"><h6 class="transaction-title">Открыть окна</h6>';
+         textt+= '    <small>{{sensor['name']}}</small></div></div>';
+
+
+  newdiv.innerHTML = textt;
+ eventsdiv.append(newdiv);
+
+
+}
+else
+{
+colordiv.classList.add("badge-light-success");
+colordiv.innerHTML = "В норме";
+}
+}
+
+else if( "{{sensor['decode_key']}}" == "tvoc")
+{
+if(fixeddata > 100)
+{
+cevents += 3;
+colordiv.classList.add("badge-light-warning");
+colordiv.innerHTML = "Внимание";
+
+
+
+var newdiv = document.createElement('div');
+newdiv.className = "transaction-item";
+
+        var textt = '   <div class="d-flex"><div class="avatar bg-light-primary rounded float-start">';
+         textt+= ' <div class="avatar-content"> <i data-feather="pocket" class="avatar-icon font-medium-3"></i>';
+         textt+= '   </div> </div>';
+         textt+= '   <div class="transaction-percentage"><h6 class="transaction-title">Проверить систему вентиляции</h6>';
+         textt+= '    <small>{{sensor['name']}}</small></div></div>';
+
+  newdiv.innerHTML = textt;
+ eventsdiv.append(newdiv);
+
+
+var newdiv = document.createElement('div');
+newdiv.className = "transaction-item";
+
+
+          var textt = '    <div class="d-flex"><div class="avatar bg-light-primary rounded float-start">';
+         textt+= ' <div class="avatar-content"> <i data-feather="pocket" class="avatar-icon font-medium-3"></i>';
+         textt+= '   </div> </div>';
+         textt+= '   <div class="transaction-percentage"><h6 class="transaction-title">Проветрить помещение</h6>';
+         textt+= '    <small>{{sensor['name']}}</small></div></div>';
+
+
+  newdiv.innerHTML = textt;
+ eventsdiv.append(newdiv);
+
+var newdiv = document.createElement('div');
+newdiv.className = "transaction-item";
+
+
+        var textt = '   <div class="d-flex"><div class="avatar bg-light-primary rounded float-start">';
+         textt+= ' <div class="avatar-content"> <i data-feather="pocket" class="avatar-icon font-medium-3"></i>';
+         textt+= '   </div> </div>';
+         textt+= '   <div class="transaction-percentage"><h6 class="transaction-title">Открыть окна</h6>';
+         textt+= '    <small>{{sensor['name']}}</small></div></div>';
+
+
+  newdiv.innerHTML = textt;
+ eventsdiv.append(newdiv);
+
+
+}
+else
+{
+colordiv.classList.add("badge-light-success");
+colordiv.innerHTML = "В норме";
+}
+}
+
+else
+{
+colordiv.classList.add("badge-light-success");
+colordiv.innerHTML = "В норме";
+}
+
+{% endfor %}
+
+document.getElementById("countevents").innerHTML = cevents;
+
+
+</script>
+
+<!-- BEGIN: Page Vendor JS-->
+    <script src="/static/app-assets/vendors/js/maps/leaflet.min.js"></script>
+    <!-- END: Page Vendor JS-->
+
+
+<script>
+
+// center of the map
+var center = [{{ floor["lat"]}},{{ floor["lng"]}}];
+
+// Create the map
+var map = L.map('map', {
+    minZoom: 5,
+    maxZoom: 10,
+    center: center,
+    zoom: 8,
+    crs: L.CRS.Simple,
+});
+
+var mark = [{{ floor["lat"]}}, {{floor["lng"]}} ];
+
+// add a marker in the given location
+var mmarker = L.marker(mark, {draggable:'false'}).addTo(map);
+
+
+  var w = {{ floor.floor.width }};
+    var h = {{ floor.floor.height }};
+   var url = '/static/upload/{{ floor.floor.image }}';
+
+
+var southWest = map.unproject([0, h], map.getMaxZoom() - 1);
+var northEast = map.unproject([w, 0], map.getMaxZoom() - 1);
+var bounds = new L.LatLngBounds(southWest, northEast);
+
+
+map.setMaxBounds(bounds);
+L.imageOverlay(url, bounds).addTo(map);
+
+mmarker.on('dragend', function(event){
+
+            var position = mmarker.getLatLng();
+
+           lng.value = position.lng;
+           lat.value = position.lat;
+    });
+
+//alert(myMarker.getLatLng());
+
+</script>
+    <!-- END: Theme JS-->
+
+<script>
+
+     var updData = function () {
+    $.ajax({
+      url: "/devices/{{device.id}}/last_payload",
+      dataType: "json",
+      success: function (data) {
+        // process your data to pull out what you plan to use to update the chart
+        // e.g. new label and a new data point
+
+        // add new label and data point to chart's underlying data structures
+
+cevents = 0;
+
+ jstr = decoder(JSON.parse(data.value));
+dtp = jstr.created;
+dtp = moment.tz(dtp, "UTC");
+dtp.tz('{{current_user.timezone}}').format();
+dtp = dtp.format('DD.MM.YYYY, HH:mm:ss');
+
+var eventsdiv = document.getElementById("eventsdiv");
+eventsdiv.innerHTML = "";
+
+        {% for sensor in device.sensors %}
+
+
+
+var fixeddata = jstr.data["{{sensor['decode_key']}}"];
+
+document.getElementById("lastupdate").innerHTML = dtp;
+document.getElementById("countpackets").innerHTML = {{ device["payload"]|length }}+jstr.data['count']-localcountpacket;
+
+
+var lastval = document.getElementById("lastval{{sensor['id']}}");
+
+lastval.innerHTML = fixeddata;
+
+var colordiv = document.getElementById("lastvalcolor{{ sensor['id'] }}");
+
+colordiv.classList.remove("badge-light-success");
+colordiv.classList.remove("badge-light-warning");
+
+
+if( "{{sensor['decode_key']}}" == "temperature")
+{
+if(fixeddata > 25)
+{
+colordiv.classList.add("badge-light-warning");
+colordiv.innerHTML = "Внимание";
+}
+else
+{
+colordiv.classList.add("badge-light-success");
+colordiv.innerHTML = "В норме";
+}
+}
+
+if( "{{sensor['decode_key']}}" == "co2")
+{
+if(fixeddata > 1000)
+{
+
+cevents+=3;
+
+colordiv.classList.add("badge-light-warning");
+colordiv.innerHTML = "Внимание";
+
+var newdiv = document.createElement('div');
+newdiv.className = "transaction-item";
+
+        var textt = '   <div class="d-flex"><div class="avatar bg-light-primary rounded float-start">';
+         textt+= ' <div class="avatar-content"> <i data-feather="pocket" class="avatar-icon font-medium-3"></i>';
+         textt+= '   </div> </div>';
+         textt+= '   <div class="transaction-percentage"><h6 class="transaction-title">Проверить систему вентиляции</h6>';
+         textt+= '    <small>{{sensor['name']}}</small></div></div>';
+
+  newdiv.innerHTML = textt;
+ eventsdiv.append(newdiv);
+
+
+var newdiv = document.createElement('div');
+newdiv.className = "transaction-item";
+
+
+          var textt = '    <div class="d-flex"><div class="avatar bg-light-primary rounded float-start">';
+         textt+= ' <div class="avatar-content"> <i data-feather="pocket" class="avatar-icon font-medium-3"></i>';
+         textt+= '   </div> </div>';
+         textt+= '   <div class="transaction-percentage"><h6 class="transaction-title">Проветрить помещение</h6>';
+         textt+= '    <small>{{sensor['name']}}</small></div></div>';
+
+
+  newdiv.innerHTML = textt;
+ eventsdiv.append(newdiv);
+
+var newdiv = document.createElement('div');
+newdiv.className = "transaction-item";
+
+
+        var textt = '   <div class="d-flex"><div class="avatar bg-light-primary rounded float-start">';
+         textt+= ' <div class="avatar-content"> <i data-feather="pocket" class="avatar-icon font-medium-3"></i>';
+         textt+= '   </div> </div>';
+         textt+= '   <div class="transaction-percentage"><h6 class="transaction-title">Открыть окна</h6>';
+         textt+= '    <small>{{sensor['name']}}</small></div></div>';
+
+
+  newdiv.innerHTML = textt;
+ eventsdiv.append(newdiv);
+
+
+}
+else
+{
+colordiv.classList.add("badge-light-success");
+colordiv.innerHTML = "В норме";
+}
+}
+
+else if( "{{sensor['decode_key']}}" == "tvoc")
+{
+if(fixeddata > 100)
+{
+colordiv.classList.add("badge-light-warning");
+colordiv.innerHTML = "Внимание";
+
+cevents +=3;
+
+var newdiv = document.createElement('div');
+newdiv.className = "transaction-item";
+
+        var textt = '   <div class="d-flex"><div class="avatar bg-light-primary rounded float-start">';
+         textt+= ' <div class="avatar-content"> <i data-feather="pocket" class="avatar-icon font-medium-3"></i>';
+         textt+= '   </div> </div>';
+         textt+= '   <div class="transaction-percentage"><h6 class="transaction-title">Проверить систему вентиляции</h6>';
+         textt+= '    <small>{{sensor['name']}}</small></div></div>';
+
+  newdiv.innerHTML = textt;
+ eventsdiv.append(newdiv);
+
+
+var newdiv = document.createElement('div');
+newdiv.className = "transaction-item";
+
+
+          var textt = '    <div class="d-flex"><div class="avatar bg-light-primary rounded float-start">';
+         textt+= ' <div class="avatar-content"> <i data-feather="pocket" class="avatar-icon font-medium-3"></i>';
+         textt+= '   </div> </div>';
+         textt+= '   <div class="transaction-percentage"><h6 class="transaction-title">Проветрить помещение</h6>';
+         textt+= '    <small>{{sensor['name']}}</small></div></div>';
+
+
+  newdiv.innerHTML = textt;
+ eventsdiv.append(newdiv);
+
+var newdiv = document.createElement('div');
+newdiv.className = "transaction-item";
+
+
+        var textt = '   <div class="d-flex"><div class="avatar bg-light-primary rounded float-start">';
+         textt+= ' <div class="avatar-content"> <i data-feather="pocket" class="avatar-icon font-medium-3"></i>';
+         textt+= '   </div> </div>';
+         textt+= '   <div class="transaction-percentage"><h6 class="transaction-title">Открыть окна</h6>';
+         textt+= '    <small>{{sensor['name']}}</small></div></div>';
+
+
+  newdiv.innerHTML = textt;
+ eventsdiv.append(newdiv);
+
+
+}
+else
+{
+colordiv.classList.add("badge-light-success");
+colordiv.innerHTML = "В норме";
+}
+}
+
+else
+{
+colordiv.classList.add("badge-light-success");
+colordiv.innerHTML = "В норме";
+}
+
+{% endfor %}
+
+document.getElementById("countevents").innerHTML = cevents;
+
+}
+ });
+  }
+
+setInterval(updData, 60000);
+</script>
+
+
+    <!-- BEGIN: Page JS-->
+    <script src="/static/app-assets/js/scripts/maps/map-leaflet.min.js"></script>
+    <!-- END: Page JS-->
+
+{% endblock %}

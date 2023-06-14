@@ -1,0 +1,110 @@
+{% extends 'newbase.html' %}
+
+{% block content %}
+    <h1>{% block title %} Create new object {% endblock %}</h1>
+
+    <div class="col-md-6 col-12 mt-2">
+        <div class="card">
+            
+            <div class="card-body">
+                <form method="post" class="form form-horizontal" 
+                action= "{% block form_action %} {{ url_for('object_api.create') }} {% endblock %}">
+                    <div class="row">
+                        <div class="col-12">
+                                {% if e is defined %}
+                                    <div class="alert alert-danger" role="alert">
+                                        <h4 class="alert-heading">ERROR</h4>
+                                        <div class="alert-body">
+                                        {{e}}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                        </div>
+    
+                        <div class="col-12">
+                            <div class="mb-1 row">
+                                <div class="col-sm-3">
+                                    <label class="col-form-label" for="name">Name</label>
+                                </div>
+                                <div class="col-sm-9">
+                                    <input type="text" id="name" class="form-control" name="name" autocomplete="off" 
+                                        placeholder="Object name"  value="{% block object_name %}{% endblock %}" 
+                                        {% block object_name_disable %} {% endblock %}/>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-12" id="type-wrapper">
+                            <div class="mb-1 row">
+                                <div class="col-sm-3 ">
+                                    <label class="col-form-label" for="browser-types">Type</label>
+                                </div>
+                                <div class="col-sm-9">
+                                    <input class="form-control" list="browsers-types" name="type" 
+                                    id="browser-types" autocomplete="off" placeholder="Select type" 
+                                    value="{% block type_name %}{% endblock %}"
+                                    {% block object_type_disable %}{% endblock %}/>
+                                </div>
+                                <datalist id="browsers-types">
+                                </datalist>
+                            </div>
+                        </div>
+    
+                        <div class="col-12" id="attrs-row">
+                            <div class="mb-1 row align-items-center">
+                                <div class="col-sm-3 ">
+                                    <label class="col-form-label">Attributes</label>
+                                </div> 
+                                <div class="col-sm-9" id="attrs-wrapper">
+                                    {% block attributes %} {% endblock %}
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        {% block parent_objects %}
+                            <div class="col-12">
+                                <div class="mb-1 row align-items-sm-center">
+                                <div class="col-sm-3 ">
+                                    <label class="col-form-label" for="parent-obj">Select parent object </label>
+                                </div>
+                                <div class="col-sm-9 d-flex align-items-center">
+                                    <input class="form-control" list="browsers-obj" name="parent-obj" id="parent-obj" autocomplete="off" placeholder="Parent objects">
+                                
+                                </div>
+                                <datalist id="browsers-obj">
+                                    {% for p in parents %}
+                                        <option value="{{p}}">
+                                    {% endfor %}
+                                </datalist>
+                                </div>
+                            </div>
+                        {% endblock %}
+
+                        {% block child_objects %} {% endblock %}
+
+    
+                        <div class="d-flex flex-column align-items-center" id="top-level-wrapper">
+                            <div class="mb-1">
+                                <a class="btn btn-primary me-1" id="add-object">Add child object</a>
+                            </div>
+    
+                            <div class="">
+                                <button type="submit" class="btn btn-primary me-1 disabled" id="submit-btn"> {% block btn_text %} Create {% endblock %}</button>
+                            </div>
+                        </div>
+                    
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+   
+{% endblock %}
+
+{% block js %} 
+
+    <!-- <script type="module" src="../../static/template-assets/objects/js/objectCreation.js"></script> -->
+    <script type="module" src="../../static/template-assets/objects/js/objectCreation mod.js"></script>
+
+{% endblock %}

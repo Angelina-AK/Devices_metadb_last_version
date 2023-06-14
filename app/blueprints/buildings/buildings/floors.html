@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    {% for floor in building['floors'] %}
+        <a href = "{{ url_for('buildings_api.floor_view', id=floor['id']) }}">
+            <h2>{{ floor['name'] }}</h2>
+        </a>
+        <span class="badge badge-primary">{{ floor['updated'] | datetime_user_tz  }}</span>
+        <a href="{{ url_for('buildings_api.floor_edit', id=floor['id']) }}">
+            <span class="badge badge-warning">Edit</span>
+        </a>
+        <hr>
+    {% endfor %}
+<a href = "{{ url_for('buildings_api.floor_create', id=building['id']) }}">
+            New Post
+        </a>
+
+        <hr>
+{% endblock %}
+
+

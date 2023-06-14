@@ -1,0 +1,93 @@
+{% extends "newbase.html"%}
+
+{% block page_title %} Object info {% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-6 mb-4">
+		<div class="card shadow mb-2">
+			<div class="card-header py-2">
+				<h6 class="m-0 font-weight-bold text-primary">Основная информация</h6> </div>
+			<div class="card-body">
+				<div class="form-group">
+					<label for="">Object name</label>
+					<p class="form-control">{{ data['object'].name }}</p>
+				</div>
+
+				<div class="form-group">
+					<label for="">Type</label>
+					<p class="form-control">{{ data['type'] }}</p>
+				</div>
+
+                <div class="form-group">
+					<label for="">Attributes</label>
+                    {% if data['attributes_val'] == [] %}
+                        <p class="form-control">Have not attributes</p>
+                    {% else %}
+                        {% for atr_val in data['attributes_val'] %}
+                        <div>
+                            <label for="">{{ atr_val['atr_name'] }}</label>
+                            <p class="form-control ">{{ atr_val['value'] }}</p>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+				</div>
+
+                <div class="form-group">
+					<label for="">Child objects</label>
+                    {% if data['childs'] == [] %}
+                        <p class="form-control">Have not childs</p>
+                    {% else %}
+                        {% for ch in data['childs'] %}
+                            <p class="form-control">{{ch}}</p>
+                        {% endfor %}
+                    {% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <div class="col-lg-6 mb-4">
+		<div class="card shadow mb-2">
+			<div class="card-header py-2">
+				<h6 class="m-0 font-weight-bold text-primary">Устройства</h6> </div>
+			<div class="card-body">
+				<p>Создано: 17.02.2022, 14:24:59</p>
+				<p>Обновлено: 17.02.2022, 14:25:04</p> 
+				<p>Последняя активность: Отсутствует</p>  </div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 mb-4">
+		<!-- Approach -->
+		<div class="card shadow mb-2">
+			<div class="card-header py-2">
+				<h6 class="m-0 font-weight-bold text-primary">Карта</h6> </div>
+			<div class="card-body">
+				<!-- <div class="form-group">
+					<label for="name">Name</label>
+					<p class="form-control">CPD-IOT-ds18b20</p>
+				</div>
+				<div class="form-group">
+					<label for="content">Key</label>
+					<p class="form-control">MkLIFC1TrU3yGw</p>
+				</div> -->
+			</div>
+		</div>
+	</div>
+
+    <div class="col-lg-6 mb-4">
+		<!-- Approach -->
+		<div class="card shadow mb-2">
+			<div class="card-header py-2">
+				<h6 class="m-0 font-weight-bold text-primary">Файлы</h6> </div>
+			<div class="card-body">
+				<p>Создано: 17.02.2022, 14:24:59</p>
+				<p>Обновлено: 17.02.2022, 14:25:04</p> 
+				<p>Последняя активность: Отсутствует</p>  </div>
+		</div>
+	</div>
+</div>
+{% endblock %}

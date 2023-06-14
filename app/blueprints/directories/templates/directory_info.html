@@ -1,0 +1,242 @@
+{%- extends 'indexleo.html' -%}
+
+{%- block content -%}
+
+    <! Подключение конфигурационного файла по ссылки>
+    <script src="https://lineone.piniastudio.com/js/app.js"></script>
+
+
+
+<!--           Отображение мгновенных сообщений -->
+<!-- -------------------------------------------------------->
+{% for cat,msg in get_flashed_messages(True) %}
+  <div class="alert flex rounded-full bg-{{cat}}/10 py-4 px-4 text-{{cat}} dark:bg-{{cat}}/15 sm:px-5">
+      {{msg}}
+  </div>
+  <br>
+{% endfor %}
+
+
+
+          <div class="card pb-4 px-4 sm:px-5 ">
+            <div class="my-3 flex h-8 items-center justify-between px-4 sm:px-5" style="margin-top: 2.5rem;">
+              <!-- Заголовок страницы-->
+              <!-- ------------------------------>
+              <div>
+                <h2 class="font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100 lg:text-base" style="margin-bottom: 0.3rem;">
+                Содержимое выбранного справочника </h2>
+                <form action="/directories/rename/{{dir_id}}" method="post" >
+                    <input name="Dir_Name" type="text" value="{{name}}" class="form-input rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" placeholder="Имя справочника" required>
+                    <button type="submit" class="btn border border-primary font-medium text-primary hover:bg-primary hover:text-white focus:bg-primary focus:text-white active:bg-primary/90 dark:border-accent dark:text-accent-light dark:hover:bg-accent dark:hover:text-white dark:focus:bg-accent dark:focus:text-white dark:active:bg-accent/90" >
+                      Сохранить имя
+                    </button>
+                </form>
+              </div>
+
+
+
+
+              <!-- Выпадающий список действий -->
+              <!-- ------------------------------>
+                <div id="dropdown-wrapper4" class="inline-flex">
+                <button
+                  class="popper-ref btn h-8 w-8 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
+                    />
+                  </svg>
+                </button>
+
+                <div class="popper-root">
+                  <div
+                    class="popper-box rounded-md border border-slate-150 bg-white py-1.5 font-inter dark:border-navy-500 dark:bg-navy-700"
+                  >
+                    <ul>
+                      <li>
+                        <a
+                          href="/directories/add/new_range/{{dir_id}}"
+                          class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100"
+                          >Добавить новый диапазон</a
+                        >
+                      </li>
+                      <li>
+                        <a
+                          href="/directories/sprav_info/{{dir_id}}/devices"
+                          class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100"
+                          >Список анализируемых устройств</a
+                        >
+                      </li>
+                    </ul>
+                    <div class="my-1 h-px bg-slate-150 dark:bg-navy-500"></div>
+                    <ul>
+                      <li>
+                        <a
+                          href="/directories/add/new_directory"
+                          class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100"
+                          >Создать новый справочник</a
+                        >
+                      </li>
+                      <li>
+                        <a
+                          href="/directories/delete/directory/{{dir_id}}"
+                          class="flex h-8 items-center px-3 pr-8 font-medium tracking-wide outline-none transition-all hover:bg-slate-100 hover:text-slate-800 focus:bg-slate-100 focus:text-slate-800 dark:hover:bg-navy-600 dark:hover:text-navy-100 dark:focus:bg-navy-600 dark:focus:text-navy-100"
+                          >Удалить рассматриваемый справочник</a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+
+
+            <!-- Содержимое справочника (полностьтю заполняется js) -->
+            <!-- ------------------------------------------------------ -->
+              <div id="grid-table-4"></div>
+            </div>
+          </div>
+
+
+
+
+
+<script>
+ const onLoad = () => {
+  const dropdownConfig = {
+    placement: "bottom-start",
+    modifiers: [
+      {
+        name: "offset",
+        options: {
+          offset: [0, 4],
+        },
+      },
+    ],
+  };
+
+
+  new Popper(
+    "#dropdown-wrapper4",
+    ".popper-ref",
+    ".popper-root",
+    dropdownConfig
+  );
+
+
+
+let sprav_info = {{json_info | tojson| safe }};
+
+console.log(sprav_info);
+
+
+  const gridTable4 = document.querySelector("#grid-table-4");
+  const gridConfig4 = {
+    columns: [
+      {
+        id: "Name",
+        name: "Name of range",
+        formatter: (cell) => Gridjs.html(`<span class="mx-2">${cell}</span>`),
+      },
+      {
+        id: "Sensor",
+        name: "Type of sensor",
+        formatter: (cell) => Gridjs.html(`<span class="mx-2">${cell}</span>`),
+      },
+      {
+        id: "Min",
+        name: "Min",
+        formatter: (cell) =>
+          Gridjs.html(
+            `<span class="text-slate-700 dark:text-navy-100 font-medium">${cell}</span>`
+          ),
+      },
+      {
+        id: "Max",
+        name: "Max",
+        sort: false,
+        formatter: (cell) =>
+          Gridjs.html(
+            `<span class="text-slate-700 dark:text-navy-100 font-medium">${cell}</span>`
+          ),
+      },
+      {
+        id: "Problems",
+        name: "Problems",
+      },
+      {
+        id: "Advices",
+        name: "Advices",
+      },
+      {
+        id: "id",
+        name: "Actions",
+        sort: false,
+        formatter: (rng_id) =>
+          Gridjs.html(`<div class="flex justify-center space-x-2">
+                          <a href="/directories/edit/${rng_id}" class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
+                              <i class="fa fa-edit"></i>
+                          </a>
+                          <a href="/directories/delete/${rng_id}" class="btn h-8 w-8 p-0 text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25">
+                              <i class="fa fa-trash-alt"></i>
+                          </a>
+                      </div>`),
+      },
+
+    ],
+
+    data: sprav_info,
+    sort: true,
+    style: {
+      td: {
+        'white-space': 'pre-wrap',
+        width: '1pt'
+      }
+    },
+    search: true,
+    autoSizeColumns : true,
+    pagination: {
+      enabled: true,
+      limit: 5,
+      summary: false
+    },
+    language: {
+       'search': {
+            'placeholder': 'Поиск...'
+       },
+       'pagination': {
+            'previous': 'Назад ',
+            'next': 'Вперед'
+      },
+      noRecordsFound: 'Диапазоны отсутствуют',
+    },
+
+
+  };
+
+  gridTable4._table = new Gridjs.Grid(gridConfig4).render(gridTable4);
+};
+
+window.addEventListener("app:mounted", onLoad, { once: true });
+
+</script>
+
+
+
+<! Запуск работы Alpine >
+<script>
+      window.addEventListener("DOMContentLoaded", () => Alpine.start());
+</script>
+
+{%- endblock -%}

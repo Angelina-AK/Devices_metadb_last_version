@@ -1,0 +1,17 @@
+{% extends 'newbase.html' %}
+
+{% block content %}
+    <span class="badge badge-primary">{{ building['created'] }}</span>
+    <p>Description: {{ building['description'] }}</p>
+    <p>Address: {{ building['address'] }}</p>
+    <p>Icon: {{ building['icon'] }}</p>
+
+<h2>Этажи</h2>
+{% for floor in building['floors'] %}
+        <a href = "{{ url_for('buildings_api.floor_view', id=floor['id']) }}">
+            <p>{{ floor['name'] }}</p>
+        </a>
+        <hr>
+    {% endfor %}
+
+{% endblock %}

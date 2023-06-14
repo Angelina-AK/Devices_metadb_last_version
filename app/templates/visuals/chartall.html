@@ -1,0 +1,707 @@
+{% extends 'newbase.html' %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+
+
+
+<!-- Main Content -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+
+
+{% for sensor in sensors %}
+                    <!-- Content Row -->
+                   
+<div class="row match-height">
+    <!-- Avg Sessions Chart Card starts -->
+ 
+                        <div class="col-xl-10 col-lg-8">
+
+                             <!-- Area Chart -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="m-0 font-weight-bold text-primary">"{{sensor['name']}}"</h6>
+                                </div>
+                                <div class="card-body">
+                                   
+                                        <canvas id="myAreaChart{{sensor['id']}}" class="chartjs" data-height="1000" ></canvas>
+                                    
+                                   
+                                </div>
+                            </div>
+                            <!-- Donut Chart -->
+                        </div>
+
+                        <div class="col-xl col-lg">
+<br>
+                            <div class="card shadow mb-4">
+
+                                <!-- Earnings (Monthly) Card Example -->
+
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Текущее</div>
+                                            <div  id="now{{sensor['id']}}" class="h5 mb-0 font-weight-bold text-gray-800"></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="card shadow mb-4">
+
+                                <!-- Earnings (Monthly) Card Example -->
+
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                                Среднее</div>
+                                            <div id="average{{sensor['id']}}"  class="h5 mb-0 font-weight-bold text-gray-800"></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-tasks fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="card shadow mb-4">
+
+                                <!-- Earnings (Monthly) Card Example -->
+
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                                Max</div>
+                                            <div id="max{{sensor['id']}}"  class="h5 mb-0 font-weight-bold text-gray-800"></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-chevron-up fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="card shadow mb-4">
+
+                                <!-- Earnings (Monthly) Card Example -->
+
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                Min</div>
+                                            <div id="min{{sensor['id']}}"  class="h5 mb-0 font-weight-bold text-gray-800"></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-chevron-down fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+
+
+
+                        </div>
+
+{% endfor %}
+
+                </div>
+                <!-- /.container-fluid -->
+
+
+
+
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+{% block js %}
+
+
+<!-- Page level plugins -->
+    <script src="/static/vendor/chart.js/Chart.min.js"></script>
+
+    <!-- Page level custom scripts -->
+
+
+<script>
+    {{decoder_format.value|safe}}
+</script>
+
+
+</script>
+
+
+<script>
+
+
+    var horizonalLinePlugin = {
+    id: 'horizontalLine',
+    afterDraw: function(chartInstance) {
+    var yScale = chartInstance.scales["y-axis-0"];
+    var canvas = chartInstance.chart;
+    var ctx = canvas.ctx;
+    var index;
+    var line;
+    var style;
+
+    if (chartInstance.options.horizontalLine) {
+      for (index = 0; index < chartInstance.options.horizontalLine.length; index++) {
+        line = chartInstance.options.horizontalLine[index];
+
+        if (!line.style) {
+          style = "rgba(169,169,169, .6)";
+        } else {
+          style = line.style;
+        }
+
+        if (line.y) {
+          yValue = yScale.getPixelForValue(line.y);
+        } else {
+          yValue = 0;
+        }
+
+        ctx.lineWidth = 5;
+
+        if (yValue) {
+          ctx.beginPath();
+          ctx.moveTo(80, yValue);
+          ctx.lineTo(canvas.width-20, yValue);
+          ctx.strokeStyle = style;
+          ctx.stroke();
+        }
+
+        if (line.text) {
+          ctx.fillStyle = style;
+          ctx.fillText(line.text, 0, yValue + ctx.lineWidth);
+        }
+      }
+      return;
+    }
+  }
+};
+
+Chart.pluginService.register(horizonalLinePlugin);
+
+
+
+
+
+
+
+
+var itera = 0;
+
+{% for sensor in sensors %}
+var currentKey = "{{sensor['decode_key']}}";
+
+
+if(currentKey == "temperature"){
+ var horizontalLine = [{
+      "y": 25,
+      "style": "#D42C19",
+      "text": "max"
+    }];
+}
+else if(currentKey == "co2"){
+ var horizontalLine = [{
+      "y": 1000,
+      "style": "#D42C19",
+      "text": "max"
+    }];
+}
+else if(currentKey == "tvoc"){
+ var horizontalLine = [{
+      "y": 100,
+      "style": "#D42C19",
+      "text": "max"
+    }];
+}
+else if(currentKey == "humidity"){
+ var horizontalLine = [{
+      "y": 60,
+      "style": "#D42C19",
+      "text": "max"
+    }];
+}
+else if(currentKey == "pressure"){
+ var horizontalLine = [{
+      "y": 1013,
+      "style": "#D42C19",
+      "text": "max"
+    }];
+}
+
+var datas = [];
+var names = [];
+var str = {};
+   {% for payload in payloads %}
+
+try {
+
+  str = decoder({{payload.value | safe}});
+
+if(str.data["time"] != null){
+var times = str.data["time"];
+   
+var dt = moment.unix(times);
+
+dt = moment.tz(dt, "UTC");
+//dec.tz('{{current_user.timezone}}').format('DD.MM.YYYY, HH:mm:ss');
+dt.tz('{{current_user.timezone}}').format();
+
+var out = (dt.format("DD.MM.YYYY, HH:mm:ss"));
+names.push(out);
+}
+else{
+    names.push("{{payload.created  | datetime_user_tz}}");
+}
+
+
+
+
+var fixeddata = str.data["{{sensor['decode_key']}}"];
+datas.push(fixeddata);
+}
+
+catch (err) {
+
+  // обработка ошибки
+
+}
+
+
+
+      {% endfor %}
+
+var nowdiv = document.getElementById("now{{sensor['id']}}");
+try {
+nowdiv.innerHTML = datas[0].toFixed(2);
+}
+catch (err) {
+nowdiv.innerHTML = datas[0];
+}
+
+var maxdiv = document.getElementById("max{{sensor['id']}}");
+try {
+maxdiv.innerHTML = Math.max.apply(null, datas).toFixed(2);
+}
+catch (err) {
+maxdiv.innerHTML = Math.max.apply(null, datas);
+}
+
+var mindiv = document.getElementById("min{{sensor['id']}}");
+try {
+mindiv.innerHTML = Math.min.apply(null, datas).toFixed(2);
+}
+catch (err) {
+mindiv.innerHTML = Math.min.apply(null, datas);
+}
+
+var arrAvg = datas.reduce((a,b) => Number(a) + Number(b), 0) / datas.length
+var averagediv = document.getElementById("average{{sensor['id']}}");
+try {
+averagediv.innerHTML = arrAvg.toFixed(2);
+}
+catch (err) {
+averagediv.innerHTML = arrAvg;
+}
+
+names = names.reverse();
+datas = datas.reverse();
+
+
+
+
+ window.onload = function(){
+
+ };
+
+
+
+// Color Variables
+  var primaryColorShade = '#836AF9',
+    yellowColor = '#ffe800',
+    successColorShade = '#28dac6',
+    warningColorShade = '#ffe802',
+    warningLightColor = '#FDAC34',
+    infoColorShade = '#299AFF',
+    greyColor = '#4F5D70',
+    blueColor = '#2c9aff',
+    blueLightColor = '#84D0FF',
+    greyLightColor = '#EDF1F4',
+    tooltipShadow = 'rgba(0, 0, 0, 0.25)',
+    lineChartPrimary = '#666ee8',
+    lineChartDanger = '#ff4961',
+    labelColor = '#6e6b7b',
+    grid_line_color = 'rgba(200, 200, 200, 0.2)'; // RGBA color helps in dark layout
+
+
+
+
+
+        // Set new default font family and font color to mimic Bootstrap's default styling
+Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+Chart.defaults.global.defaultFontColor = '#858796';
+
+/*
+function number_format(number, decimals, dec_point, thousands_sep) {
+  // *     example: number_format(1234.56, 2, ',', ' ');
+  // *     return: '1 234,56'
+  number = (number + '').replace(',', '').replace(' ', '');
+  var n = !isFinite(+number) ? 0 : +number,
+    prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+    sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+    dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+    s = '',
+    toFixedFix = function(n, prec) {
+      var k = Math.pow(10, prec);
+      return '' + Math.round(n * k) / k;
+    };
+  // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+  s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+  if (s[0].length > 3) {
+    s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+  }
+  if ((s[1] || '').length < prec) {
+    s[1] = s[1] || '';
+    s[1] += new Array(prec - s[1].length + 1).join('0');
+  }
+  return s.join(dec);
+}
+*/
+var colorsg = [
+'#28dac6',
+   '#666ee8',
+    '#FDAC34',
+   '#299AFF',
+     '#4F5D70',
+    '#2c9aff'
+];
+
+var sample = {data:datas,
+            label: '{{sensor['name']}}',
+            borderColor: colorsg[itera],
+            lineTension: 0.5,
+            pointStyle: 'circle',
+            backgroundColor: colorsg[itera],
+            fill: false,
+            pointRadius: 5,
+            pointHoverRadius: 5,
+            pointHoverBorderWidth: 5,
+            pointBorderColor: 'transparent',
+            pointHoverBorderColor: window.colors.solid.white,
+            pointHoverBackgroundColor: colorsg[itera],
+            pointShadowOffsetX: 1,
+            pointShadowOffsetY: 1,
+            pointShadowBlur: 5,
+            pointShadowColor: colorsg[itera]
+
+};
+
+
+
+// Area Chart Example
+var ctx = document.getElementById("myAreaChart{{sensor['id']}}");
+var myLineChart{{sensor['id']}} = new Chart(ctx, {
+  type: 'line',
+      plugins: [
+        // to add spacing between legends and chart
+        {
+          beforeInit: function (chart) {
+            chart.legend.afterFit = function () {
+              this.height += 20;
+            };
+          }
+        }
+      ],
+      options: {
+
+horizontalLine:horizontalLine,
+        responsive: true,
+        maintainAspectRatio: false,
+        backgroundColor: false,
+        hover: {
+          mode: 'label'
+        },
+
+        tooltips: {
+          // Updated default tooltip UI
+          shadowOffsetX: 1,
+          shadowOffsetY: 1,
+          shadowBlur: 8,
+          shadowColor: tooltipShadow,
+          backgroundColor: window.colors.solid.white,
+          titleFontColor: window.colors.solid.black,
+          bodyFontColor: window.colors.solid.black
+        },
+        layout: {
+          padding: {
+            top: -15,
+            bottom: -25,
+            left: -15
+          }
+        },
+        scales: {
+          xAxes: [
+            {
+
+              display: true,
+              scaleLabel: {
+                display: true
+              },
+              gridLines: {
+                display: true,
+                color: grid_line_color,
+                zeroLineColor: grid_line_color
+              },
+              ticks: {
+                fontColor: labelColor
+              }
+            }
+          ],
+          yAxes: [
+            {
+
+
+              display: true,
+              scaleLabel: {
+                display: true
+              },
+
+
+              ticks: {
+
+
+
+
+
+
+                fontColor: labelColor
+              },
+              gridLines: {
+                display: true,
+                color: grid_line_color,
+                zeroLineColor: grid_line_color
+              }
+            }
+          ]
+        },
+        legend: {
+          position: 'top',
+          align: 'start',
+          labels: {
+            usePointStyle: true,
+            padding: 25,
+            boxWidth: 9
+          }
+        }
+      },
+      data: {
+        labels: names,
+        datasets: [sample]
+
+      }
+    });
+
+
+
+
+
+
+
+itera++;
+{% endfor %}
+
+    </script>
+
+<script>
+/*
+function obnovit_stranicu() {
+  location.reload();
+}
+setInterval("obnovit_stranicu()", 60000);
+*/
+function convertTZ(date, tzString) {
+    return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));
+}
+
+dn = new Date()
+dnt = convertTZ(dn, "{{current_user.timezone}}")
+
+console.log(dnt);
+
+var now = moment();
+console.log(now.format("DD.MM.YYYY, HH:mm:ss"));
+
+    var getData = function () {
+    $.ajax({
+      url: "/chart/{{device_id}}/get_data",
+      dataType: "json",
+      success: function (data) {
+        // process your data to pull out what you plan to use to update the chart
+        // e.g. new label and a new data point
+        console.log("UPDATE");
+        // add new label and data point to chart's underlying data structures
+
+        {% for sensor in sensors %}
+
+var datas = [];
+var names = [];
+var str = {};
+
+   for (var i = 0; i<data.length; i++) {
+try {
+
+
+  str = decoder(JSON.parse(data[i].value));
+
+
+if(str.data["time"] != null){
+var times = str.data["time"];
+   
+var dt = moment.unix(times);
+
+
+
+dt = moment.tz(dt, "UTC");
+//dec.tz('{{current_user.timezone}}').format('DD.MM.YYYY, HH:mm:ss');
+dt.tz('{{current_user.timezone}}').format();
+
+var out = (dt.format("DD.MM.YYYY, HH:mm:ss"));
+
+
+names.push(out);
+}
+else{
+   
+//dtp = convertTZ(data[i].created , "{{current_user.timezone}}")
+
+dtp = data[i].created;
+
+dtp = moment.tz(dtp, "UTC");
+//dec.tz('{{current_user.timezone}}').format('DD.MM.YYYY, HH:mm:ss');
+dtp.tz('{{current_user.timezone}}').format();
+
+
+dtp = dtp.format('DD.MM.YYYY, HH:mm:ss');
+
+
+//dtp = dtp.format("DD.MM.YYYY, HH:mm:ss");
+//console.log(dtp);
+
+
+names.push(dtp);
+
+}
+
+
+
+
+var fixeddata = str.data["{{sensor['decode_key']}}"];
+datas.push(fixeddata);
+
+}
+
+catch (err) {
+
+  // обработка ошибки
+
+}
+}
+
+
+var nowdiv = document.getElementById("now{{sensor['id']}}");
+try {
+nowdiv.innerHTML = datas[0].toFixed(2);
+}
+catch (err) {
+nowdiv.innerHTML = datas[0];
+}
+
+var maxdiv = document.getElementById("max{{sensor['id']}}");
+try {
+maxdiv.innerHTML = Math.max.apply(null, datas).toFixed(2);
+}
+catch (err) {
+maxdiv.innerHTML = Math.max.apply(null, datas);
+}
+
+var mindiv = document.getElementById("min{{sensor['id']}}");
+try {
+mindiv.innerHTML = Math.min.apply(null, datas).toFixed(2);
+}
+catch (err) {
+mindiv.innerHTML = Math.min.apply(null, datas);
+}
+
+var arrAvg = datas.reduce((a,b) => Number(a) + Number(b), 0) / datas.length;
+
+var averagediv = document.getElementById("average{{sensor['id']}}");
+try {
+averagediv.innerHTML = arrAvg.toFixed(2);
+}
+catch (err) {
+averagediv.innerHTML = arrAvg;
+}
+
+names = names.reverse();
+datas = datas.reverse();
+
+
+//myLineChart{{sensor['id']}}.data.labels.pop();
+//myLineChart{{sensor['id']}}.data.datasets[0].data.pop();
+
+//console.log(myLineChart{{sensor['id']}}.data.labels);
+//console.log(datas);
+
+
+        myLineChart{{sensor['id']}}.data.labels =names;
+        myLineChart{{sensor['id']}}.data.datasets[0].data = datas;
+
+        // re-render the chart
+       myLineChart{{sensor['id']}}.update();
+       {% endfor %}
+}
+
+    });
+  }
+
+
+  // get new data every 3 seconds
+  setInterval(getData, 30000);
+
+
+
+</script>
+
+{% endblock %}

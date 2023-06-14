@@ -1,0 +1,17 @@
+{% extends 'newbase.html' %}
+
+{% block content %}
+    <h1>{% block title %} Create a Device {% endblock %}</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label for="title">Name</label>
+        <input type="text" name="name"
+               placeholder="Device name" class="form-control"
+               value="{{ request.form['name'] }}"></input>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>
+{% endblock %}

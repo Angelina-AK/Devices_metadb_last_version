@@ -1,0 +1,12 @@
+{% extends 'attributes/attribute_create.html' %}
+
+
+{% block form_title %}
+Editing attribute
+{% endblock %}
+
+{% block form_action %}
+    {{ url_for('object_api.attribute_edit', id=atr.id) }}
+{% endblock %}
+
+{% block atr_value %}{{atr.attribute_name}}{% endblock %}

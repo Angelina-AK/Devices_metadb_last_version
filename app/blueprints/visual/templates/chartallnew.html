@@ -1,0 +1,1004 @@
+{% extends 'indexleo.html' %}
+
+{% block css %}
+
+<style type="text/css">
+   
+.n1 {
+    background-color: #28dac6; 
+}
+   
+.n2 {
+  background-color: #ffe802; 
+ 
+}
+   
+.n3 {
+  background-color: #FDAC34; 
+ 
+}
+
+.n4 {
+  background-color: #299AFF; 
+ 
+}
+
+.n5 {
+  background-color: #4F5D70; 
+
+
+}
+
+.n6 {
+  background-color: #2c9aff; 
+ 
+}
+
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+{% for sensor in sensors %}
+
+
+                        <div class="col-xl-2 col-md-4 col-sm-6">
+                            <div class="card text-center ">
+                                <div class="card-body">
+                                    
+                            
+                                    <h2 class="fw-bolder" id="lastval{{ sensor['id'] }}"></h2>
+                                    
+
+                                    <span class="badge rounded-pill n{{loop.index}}">{{ sensor['name'] }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    
+
+{% endfor %}
+
+
+
+</div>
+<section id="chartjs-chart">
+                    
+
+                    <!-- Line Chart Starts-->
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div>
+                                        <h4 class="card-title">График потока данных</h4>
+                                        <span class="card-subtitle text-muted">Все последние данные</span>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <canvas class="line-chart-ex chartjs" data-height="600"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div>
+                                        <h4 class="card-title">График потока данных</h4>
+                                        <span class="card-subtitle text-muted">Все последние данные</span>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <canvas class="line-chart-ex2 chartjs" data-height="600" id="g1"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Line Chart Ends-->
+
+                    
+                </section>
+                <!-- ChartJS section end -->
+
+
+ <section id="basic-datatable">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <table class="datatables-basic table">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th></th>
+                                            <th>id</th>
+                                            <th>Date</th>
+                                            <th>RAW</th>                          
+                                            
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    
+
+
+   {% for payload in payloads %}
+<tr>
+
+
+
+                                        <td></td>
+                                            <td></td>
+                                        <td>{{payload.id}}</td>
+                                            <td>{{payload.created  | datetime_user_tz}}</td>
+                                            <td>{{payload.value | safe}}</td>
+                                            
+                                           
+                                            <td>Action</td>
+                                    </tr>
+                                    {% endfor%}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal to add new record -->
+                    <div class="modal modal-slide-in fade" id="modals-slide-in">
+                        <div class="modal-dialog sidebar-sm">
+                            <form class="add-new-record modal-content pt-0">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">×</button>
+                                <div class="modal-header mb-1">
+                                    <h5 class="modal-title" id="exampleModalLabel">New Record</h5>
+                                </div>
+                                <div class="modal-body flex-grow-1">
+                                    <div class="mb-1">
+                                        <label class="form-label" for="basic-icon-default-fullname">Full Name</label>
+                                        <input type="text" class="form-control dt-full-name" id="basic-icon-default-fullname" placeholder="John Doe" aria-label="John Doe" />
+                                    </div>
+                                    <div class="mb-1">
+                                        <label class="form-label" for="basic-icon-default-post">Post</label>
+                                        <input type="text" id="basic-icon-default-post" class="form-control dt-post" placeholder="Web Developer" aria-label="Web Developer" />
+                                    </div>
+                                    <div class="mb-1">
+                                        <label class="form-label" for="basic-icon-default-email">Email</label>
+                                        <input type="text" id="basic-icon-default-email" class="form-control dt-email" placeholder="john.doe@example.com" aria-label="john.doe@example.com" />
+                                        <small class="form-text"> You can use letters, numbers & periods </small>
+                                    </div>
+                                    <div class="mb-1">
+                                        <label class="form-label" for="basic-icon-default-date">Joining Date</label>
+                                        <input type="text" class="form-control dt-date" id="basic-icon-default-date" placeholder="MM/DD/YYYY" aria-label="MM/DD/YYYY" />
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label" for="basic-icon-default-salary">Salary</label>
+                                        <input type="text" id="basic-icon-default-salary" class="form-control dt-salary" placeholder="$12000" aria-label="$12000" />
+                                    </div>
+                                    <button type="button" class="btn btn-primary data-submit me-1">Submit</button>
+                                    <button type="reset" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+                <!--/ Basic table -->
+
+ {% endblock %}
+
+{% block js %}
+ 
+
+    <!-- BEGIN: Page Vendor JS-->
+    <script src="/static/app-assets/vendors/js/charts/chart.min.js"></script>
+   
+    <!-- END: Page Vendor JS-->
+
+<script>
+    {{decoder_format.value|safe}}
+</script>
+    
+ <script src="/static/app-assets/vendors/js/tables/datatable/jquery.dataTables.min.js"></script>
+    <script src="/static/app-assets/vendors/js/tables/datatable/dataTables.bootstrap5.min.js"></script>
+    <script src="/static/app-assets/vendors/js/tables/datatable/dataTables.responsive.min.js"></script>
+    <script src="/static/app-assets/vendors/js/tables/datatable/responsive.bootstrap5.min.js"></script>
+    <script src="/static/app-assets/vendors/js/tables/datatable/datatables.checkboxes.min.js"></script>
+    <script src="/static/app-assets/vendors/js/tables/datatable/datatables.buttons.min.js"></script>
+    <script src="/static/app-assets/vendors/js/tables/datatable/jszip.min.js"></script>
+    <script src="/static/app-assets/vendors/js/tables/datatable/pdfmake.min.js"></script>
+    <script src="/static/app-assets/vendors/js/tables/datatable/vfs_fonts.js"></script>
+    <script src="/static/app-assets/vendors/js/tables/datatable/buttons.html5.min.js"></script>
+    <script src="/static/app-assets/vendors/js/tables/datatable/buttons.print.min.js"></script>
+    <script src="/static/app-assets/vendors/js/tables/datatable/dataTables.rowGroup.min.js"></script>
+    <script src="/static/app-assets/vendors/js/pickers/flatpickr/flatpickr.min.js"></script>
+
+<!-- BEGIN: Page JS-->
+    <!--<script src="/static/app-assets/js/scripts/tables/table-datatables-basic.js"></script> -->
+    <!-- END: Page JS-->
+
+<script>
+
+
+var dt_basic_table = $('.datatables-basic'),
+    dt_date_table = $('.dt-date'),
+    dt_complex_header_table = $('.dt-complex-header'),
+    dt_row_grouping_table = $('.dt-row-grouping'),
+    dt_multilingual_table = $('.dt-multilingual'),
+    assetPath = '/static/app-assets/';
+
+  if ($('body').attr('data-framework') === 'laravel') {
+    assetPath = $('body').attr('data-asset-path');
+  }
+
+  // DataTable with buttons
+  // --------------------------------------------------------------------
+
+  if (dt_basic_table.length) {
+    var dt_basic = dt_basic_table.DataTable({
+      //ajax: assetPath + 'data/table-datatable.json',
+      columns: [
+        { data: 'responsive_id' },
+        { data: 'id' },
+        { data: 'id' }, // used for sorting so will hide this column
+        { data: 'Date' },
+       
+        { data: 'RAW' },
+        
+        { data: '' }
+        
+      ],
+      columnDefs: [
+        {
+          // For Responsive
+          className: 'control',
+          orderable: false,
+          responsivePriority: 2,
+          targets: 0
+        },
+        {
+          // For Checkboxes
+          targets: 1,
+          orderable: false,
+          responsivePriority: 3,
+          render: function (data, type, full, meta) {
+            return (
+              '<div class="form-check"> <input class="form-check-input dt-checkboxes" type="checkbox" value="" id="checkbox' +
+              data +
+              '" /><label class="form-check-label" for="checkbox' +
+              data +
+              '"></label></div>'
+            );
+          },
+          checkboxes: {
+            selectAllRender:
+              '<div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="checkboxSelectAll" /><label class="form-check-label" for="checkboxSelectAll"></label></div>'
+          }
+        },
+        {
+          targets: 2,
+          visible: true
+        },
+        {
+          responsivePriority: 1,
+          targets: 4
+        },
+        
+        {
+          // Actions
+          targets: -1,
+          title: 'Actions',
+          orderable: false,
+          render: function (data, type, full, meta) {
+            return (
+              '<div class="d-inline-flex">' +
+              '<a class="pe-1 dropdown-toggle hide-arrow text-primary" data-bs-toggle="dropdown">' +
+              feather.icons['more-vertical'].toSvg({ class: 'font-small-4' }) +
+              '</a>' +
+              '<div class="dropdown-menu dropdown-menu-end">' +
+              '<a href="javascript:;" class="dropdown-item">' +
+              feather.icons['file-text'].toSvg({ class: 'font-small-4 me-50' }) +
+              'Details</a>' +
+              '<a href="javascript:;" class="dropdown-item">' +
+              feather.icons['archive'].toSvg({ class: 'font-small-4 me-50' }) +
+              'Archive</a>' +
+              '<a href="javascript:;" class="dropdown-item delete-record">' +
+              feather.icons['trash-2'].toSvg({ class: 'font-small-4 me-50' }) +
+              'Delete</a>' +
+              '</div>' +
+              '</div>' +
+              '<a href="javascript:;" class="item-edit">' +
+              feather.icons['edit'].toSvg({ class: 'font-small-4' }) +
+              '</a>'
+            );
+          }
+        }
+      ],
+      order: [[2, 'desc']],
+      dom: '<"card-header border-bottom p-1"<"head-label"><"dt-action-buttons text-end"B>><"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+      displayLength: 10,
+      lengthMenu: [5, 10, 25, 50, 75, 100],
+      buttons: [
+        {
+          extend: 'collection',
+          className: 'btn btn-outline-secondary dropdown-toggle me-2',
+          text: feather.icons['share'].toSvg({ class: 'font-small-4 me-50' }) + 'Export',
+          buttons: [
+            {
+              extend: 'print',
+              text: feather.icons['printer'].toSvg({ class: 'font-small-4 me-50' }) + 'Print',
+              className: 'dropdown-item',
+              exportOptions: { columns: [1, 2, 3, 4] }
+            },
+            {
+              extend: 'csv',
+              text: feather.icons['file-text'].toSvg({ class: 'font-small-4 me-50' }) + 'Csv',
+              className: 'dropdown-item',
+              exportOptions: { columns: [1, 2, 3, 4] }
+            },
+            {
+              extend: 'excel',
+              text: feather.icons['file'].toSvg({ class: 'font-small-4 me-50' }) + 'Excel',
+              className: 'dropdown-item',
+              exportOptions: { columns: [1, 2, 3, 4] }
+            },
+            {
+              extend: 'pdf',
+              text: feather.icons['clipboard'].toSvg({ class: 'font-small-4 me-50' }) + 'Pdf',
+              className: 'dropdown-item',
+              exportOptions: { columns: [1, 2, 3, 4] }
+            },
+            {
+              extend: 'copy',
+              text: feather.icons['copy'].toSvg({ class: 'font-small-4 me-50' }) + 'Copy',
+              className: 'dropdown-item',
+              exportOptions: { columns: [1, 2, 3, 4] }
+            }
+          ],
+          init: function (api, node, config) {
+            $(node).removeClass('btn-secondary');
+            $(node).parent().removeClass('btn-group');
+            setTimeout(function () {
+              $(node).closest('.dt-buttons').removeClass('btn-group').addClass('d-inline-flex');
+            }, 50);
+          }
+        },
+        /*
+        {
+          text: feather.icons['plus'].toSvg({ class: 'me-50 font-small-4' }) + 'Add New Record',
+          className: 'create-new btn btn-primary',
+          attr: {
+            'data-bs-toggle': 'modal',
+            'data-bs-target': '#modals-slide-in'
+          },
+          init: function (api, node, config) {
+            $(node).removeClass('btn-secondary');
+          }
+        }*/
+      ],
+      responsive: {
+        details: {
+          display: $.fn.dataTable.Responsive.display.modal({
+            header: function (row) {
+              var data = row.data();
+              return 'Details of ' + data['full_name'];
+            }
+          }),
+          type: 'column',
+          renderer: function (api, rowIdx, columns) {
+            var data = $.map(columns, function (col, i) {
+              return col.title !== '' // ? Do not show row in modal popup if title is blank (for check box)
+                ? '<tr data-dt-row="' +
+                    col.rowIdx +
+                    '" data-dt-column="' +
+                    col.columnIndex +
+                    '">' +
+                    '<td>' +
+                    col.title +
+                    ':' +
+                    '</td> ' +
+                    '<td>' +
+                    col.data +
+                    '</td>' +
+                    '</tr>'
+                : '';
+            }).join('');
+
+            return data ? $('<table class="table"/>').append('<tbody>' + data + '</tbody>') : false;
+          }
+        }
+      },
+      language: {
+        paginate: {
+          // remove previous & next text from pagination
+          previous: '&nbsp;',
+          next: '&nbsp;'
+        }
+      }
+    });
+    $('div.head-label').html('<h6 class="mb-0">Таблица потока данных</h6>');
+  }
+
+  // Flat Date picker
+  if (dt_date_table.length) {
+    dt_date_table.flatpickr({
+      monthSelectorType: 'static',
+      dateFormat: 'm/d/Y'
+    });
+  }
+
+  // Add New record
+  // ? Remove/Update this code as per your requirements ?
+  var count = 101;
+  $('.data-submit').on('click', function () {
+    var $new_name = $('.add-new-record .dt-full-name').val(),
+      $new_post = $('.add-new-record .dt-post').val(),
+      $new_email = $('.add-new-record .dt-email').val(),
+      $new_date = $('.add-new-record .dt-date').val(),
+      $new_salary = $('.add-new-record .dt-salary').val();
+
+    if ($new_name != '') {
+      dt_basic.row
+        .add({
+          responsive_id: null,
+          id: count,
+          date: $new_name,
+          RAW: $new_post,
+          
+          status: 5
+        })
+        .draw();
+      count++;
+      $('.modal').modal('hide');
+    }
+  });
+
+  // Delete Record
+  $('.datatables-basic tbody').on('click', '.delete-record', function () {
+    dt_basic.row($(this).parents('tr')).remove().draw();
+  });
+
+  
+
+
+</script>
+
+    <!-- BEGIN: Page JS-->
+   <!-- <script src="/static/app-assets/js/scripts/charts/chart-chartjs.js"></script>-->
+    <!-- END: Page JS-->
+
+
+<script>
+    
+    
+
+
+  var chartWrapper = $('.chartjs'),
+    flatPicker = $('.flat-picker'),
+    barChartEx = $('.bar-chart-ex'),
+    horizontalBarChartEx = $('.horizontal-bar-chart-ex'),
+     lineChartEx = $('.line-chart-ex'),
+    lineChartEx2 = $('.line-chart-ex2'),
+    radarChartEx = $('.radar-chart-ex'),
+    polarAreaChartEx = $('.polar-area-chart-ex'),
+    bubbleChartEx = $('.bubble-chart-ex'),
+    doughnutChartEx = $('.doughnut-chart-ex'),
+    scatterChartEx = $('.scatter-chart-ex'),
+    lineAreaChartEx = $('.line-area-chart-ex');
+
+  // Color Variables
+  var primaryColorShade = '#836AF9',
+    yellowColor = '#ffe800',
+    successColorShade = '#28dac6',
+    warningColorShade = '#ffe802',
+    warningLightColor = '#FDAC34',
+    infoColorShade = '#299AFF',
+    greyColor = '#4F5D70',
+    blueColor = '#2c9aff',
+    blueLightColor = '#84D0FF',
+    greyLightColor = '#EDF1F4',
+    tooltipShadow = 'rgba(0, 0, 0, 0.25)',
+    lineChartPrimary = '#666ee8',
+    lineChartDanger = '#ff4961',
+    labelColor = '#6e6b7b',
+    grid_line_color = 'rgba(200, 200, 200, 0.2)'; // RGBA color helps in dark layout
+
+  // Detect Dark Layout
+  if ($('html').hasClass('dark-layout')) {
+    labelColor = '#b4b7bd';
+  }
+
+  // Wrap charts with div of height according to their data-height
+  if (chartWrapper.length) {
+    chartWrapper.each(function () {
+      $(this).wrap($('<div style="height:' + this.getAttribute('data-height') + 'px"></div>'));
+    });
+  }
+
+  // Init flatpicker
+  if (flatPicker.length) {
+    var date = new Date();
+    flatPicker.each(function () {
+      $(this).flatpickr({
+        mode: 'range',
+        defaultDate: ['2019-05-01', '2019-05-10']
+      });
+    });
+  }
+
+
+
+
+
+
+
+
+</script>
+
+<script>
+
+var all_datasets = [];
+
+var itera = 0;
+
+var colorsg = [
+'#28dac6',
+   '#ffe802',
+    '#FDAC34',
+   '#299AFF',
+     '#4F5D70',
+    '#2c9aff'
+];
+
+{% for sensor in sensors %}
+var names = [];
+var datas = [];
+
+
+
+var str = {};
+   {% for payload in payloads %}
+
+try {
+
+  str = decoder({{payload.value | safe}});
+
+names.push("{{payload.created  | datetime_user_tz}}");
+
+
+
+var fixeddata = str.data["{{sensor['decode_key']}}"];
+datas.push(fixeddata);
+
+
+
+}
+
+catch (err) {
+
+  // обработка ошибки
+
+}
+
+
+var lastval = document.getElementById("lastval{{sensor['id']}}");
+try {
+lastval.innerHTML = datas[0].toFixed(2);
+}
+catch (err) {
+lastval.innerHTML = datas[0];
+}
+
+
+      {% endfor %}
+
+
+datas=datas.reverse();
+
+var sample = {data:datas,
+            label: '{{sensor['name']}}',
+            borderColor: colorsg[itera],
+            lineTension: 0.5,
+            pointStyle: 'circle',
+            backgroundColor: colorsg[itera],
+            fill: false,
+            pointRadius: 5,
+            pointHoverRadius: 5,
+            pointHoverBorderWidth: 5,
+            pointBorderColor: 'transparent',
+            pointHoverBorderColor: window.colors.solid.white,
+            pointHoverBackgroundColor: colorsg[itera],
+            pointShadowOffsetX: 1,
+            pointShadowOffsetY: 1,
+            pointShadowBlur: 5,
+            pointShadowColor: colorsg[itera]
+
+};
+
+all_datasets.push(sample);
+
+
+
+
+names = names.reverse();
+
+
+
+
+
+
+
+
+
+
+
+
+itera++;
+
+
+
+{% endfor %}
+
+
+// Line Chart
+  // --------------------------------------------------------------------
+  if (lineChartEx2.length) {
+    var lineExample2 = new Chart(lineChartEx2, {
+      type: 'line',
+      plugins: [
+        // to add spacing between legends and chart
+        {
+          beforeInit: function (chart) {
+            chart.legend.afterFit = function () {
+              this.height += 20;
+            };
+          }
+        }
+      ],
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        backgroundColor: false,
+        hover: {
+          mode: 'label'
+        },
+       
+        tooltips: {
+          // Updated default tooltip UI
+          shadowOffsetX: 1,
+          shadowOffsetY: 1,
+          shadowBlur: 8,
+          shadowColor: tooltipShadow,
+          backgroundColor: window.colors.solid.white,
+          titleFontColor: window.colors.solid.black,
+          bodyFontColor: window.colors.solid.black
+        },
+        layout: {
+          padding: {
+            top: -15,
+            bottom: -25,
+            left: -15
+          }
+        },
+        scales: {
+          xAxes: [
+            {
+              display: true,
+              scaleLabel: {
+                display: true
+              },
+              gridLines: {
+                display: true,
+                color: grid_line_color,
+                zeroLineColor: grid_line_color
+              },
+              ticks: {
+                fontColor: labelColor
+              }
+            }
+          ],
+          yAxes: [
+            {
+              display: true,
+              scaleLabel: {
+                display: true
+              },
+              ticks: {
+                
+                fontColor: labelColor
+              },
+              gridLines: {
+                display: true,
+                color: grid_line_color,
+                zeroLineColor: grid_line_color
+              }
+            }
+          ]
+        },
+        legend: {
+          position: 'top',
+          align: 'start',
+          labels: {
+            usePointStyle: true,
+            padding: 25,
+            boxWidth: 9
+          }
+        }
+      },
+      data: {
+        labels: names,
+        datasets: all_datasets
+        
+      }
+    });
+  }
+
+if (lineChartEx.length) {
+    var lineExample = new Chart(lineChartEx, {
+      type: 'line',
+      plugins: [
+        // to add spacing between legends and chart
+        {
+          beforeInit: function (chart) {
+            chart.legend.afterFit = function () {
+              this.height += 20;
+            };
+          }
+        }
+      ],
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        backgroundColor: false,
+        hover: {
+          mode: 'label'
+        },
+       
+        tooltips: {
+          // Updated default tooltip UI
+          shadowOffsetX: 1,
+          shadowOffsetY: 1,
+          shadowBlur: 8,
+          shadowColor: tooltipShadow,
+          backgroundColor: window.colors.solid.white,
+          titleFontColor: window.colors.solid.black,
+          bodyFontColor: window.colors.solid.black
+        },
+        layout: {
+          padding: {
+            top: -15,
+            bottom: -25,
+            left: -15
+          }
+        },
+        scales: {
+          xAxes: [
+            {
+              display: true,
+              scaleLabel: {
+                display: true
+              },
+              gridLines: {
+                display: true,
+                color: grid_line_color,
+                zeroLineColor: grid_line_color
+              },
+              ticks: {
+                fontColor: labelColor
+              }
+            }
+          ],
+          yAxes: [
+            {
+              display: true,
+              scaleLabel: {
+                display: true
+              },
+              ticks: {
+                
+                fontColor: labelColor
+              },
+              gridLines: {
+                display: true,
+                color: grid_line_color,
+                zeroLineColor: grid_line_color
+              }
+            }
+          ]
+        },
+        legend: {
+          position: 'top',
+          align: 'start',
+          labels: {
+            usePointStyle: true,
+            padding: 25,
+            boxWidth: 9
+          }
+        }
+      },
+      data: {
+        labels: names,
+        datasets: all_datasets
+        
+      }
+    });
+  }
+
+    </script>
+
+<script>
+/*
+function obnovit_stranicu() {
+  location.reload();
+}
+setInterval("obnovit_stranicu()", 60000);
+*/
+function convertTZ(date, tzString) {
+    return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));
+}
+
+
+
+dn = new Date()
+dnt = convertTZ(dn, "{{current_user.timezone}}")
+
+
+
+var now = moment();
+
+
+    var getData = function () {
+    $.ajax({
+      url: "/chart/{{device_id}}/get_data",
+      dataType: "json",
+      success: function (data) {
+        // process your data to pull out what you plan to use to update the chart
+        // e.g. new label and a new data point
+
+        // add new label and data point to chart's underlying data structures
+
+
+var dcount = 0;
+
+dt_basic.clear();
+for (var i = 0; i<data.length; i++) {
+
+        
+    
+dtp = data[i].created;
+
+dtp = moment.tz(dtp, "UTC");
+//dec.tz('{{current_user.timezone}}').format('DD.MM.YYYY, HH:mm:ss');
+dtp.tz('{{current_user.timezone}}').format();
+
+
+dtp = dtp.format('DD.MM.YYYY, HH:mm:ss');
+
+
+
+    dt_basic.rows.add(
+[{
+
+"responsive_id": null,
+         
+
+    "id": data[i].id,
+    "Date": dtp,
+    "RAW": data[i].value
+
+}]
+
+
+        );
+    
+
+}
+dt_basic.draw();
+
+        {% for sensor in sensors %}
+
+
+
+var datas = [];
+var names = [];
+var str = {};
+
+   for (var i = 0; i<data.length; i++) {
+try {
+
+
+  str = decoder(JSON.parse(data[i].value));
+
+
+
+//dtp = convertTZ(data[i].created , "{{current_user.timezone}}")
+
+dtp = data[i].created;
+
+dtp = moment.tz(dtp, "UTC");
+//dec.tz('{{current_user.timezone}}').format('DD.MM.YYYY, HH:mm:ss');
+dtp.tz('{{current_user.timezone}}').format();
+
+
+dtp = dtp.format('DD.MM.YYYY, HH:mm:ss');
+
+
+//dtp = dtp.format("DD.MM.YYYY, HH:mm:ss");
+//console.log(dtp);
+
+
+names.push(dtp);
+
+var fixeddata = str.data["{{sensor['decode_key']}}"];
+datas.push(fixeddata);
+
+}
+
+catch (err) {
+
+  // обработка ошибки
+
+}
+
+
+var lastval = document.getElementById("lastval{{sensor['id']}}");
+try {
+lastval.innerHTML = datas[0].toFixed(2);
+}
+catch (err) {
+lastval.innerHTML = datas[0];
+}
+
+
+}
+
+
+names = names.reverse();
+datas = datas.reverse();
+
+
+//myLineChart{{sensor['id']}}.data.labels.pop();
+//myLineChart{{sensor['id']}}.data.datasets[0].data.pop();
+
+//console.log(myLineChart{{sensor['id']}}.data.labels);
+//console.log(datas);
+
+
+
+        lineExample.data.labels =names;
+        lineExample.data.datasets[dcount].data = datas;
+
+lineExample2.data.labels =names;
+        lineExample2.data.datasets[dcount].data = datas;
+
+        // re-render the chart
+       
+       dcount ++;
+
+
+
+       {% endfor %}
+      lineExample.update();
+ lineExample2.update();
+
+
+
+
+}
+
+    });
+  }
+
+
+  // get new data every 3 seconds
+  setInterval(getData, 60000);
+
+
+
+</script>
+
+
+
+
+
+
+
+    {% endblock %}
+

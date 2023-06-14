@@ -1,0 +1,51 @@
+{% extends 'newbase.html' %}
+
+{% block css %}
+    <link href="/static/css/maplic.css" rel="stylesheet">
+    <link href="/static/mapplic/mapplic.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+	<div id="mapplic"></div> 
+						
+{% endblock %}
+		
+{% block js %}
+
+		<script src="/static/js/jquery.mousewheel.js"></script>
+		<script src="/static/js/script.js"></script>
+		<script src="/static/js/csvparser.js"></script> <!-- Required for CSV Support -->
+		<script src="/static/mapplic/mapplic.js"></script>
+
+	<script>
+		$(document).ready(function() {
+			var css = '.mapplic-filtered svg [id^=landmark] > * {opacity: 1 !important; }';
+
+			var mapplic = $('#mapplic').mapplic({
+				source: '/static/mall.json',
+				customcss: css,
+				sidebar: true,
+				sidebartoggle: true,
+				alphabetic: true,
+				height: 560,
+				developer: true,
+				searchdescription: true,
+				searcheverywhere: true,
+				animations: true,
+				minimap: false,
+				marker: 'hidden',
+				fillcolor: false,
+				fullscreen: false,
+				developer: true,
+				thumbholder: true,
+				maxscale: 3
+			});
+			mapplic.on('locationopened', function(e, location) {
+				// location grants full access to the location
+				console.log(location.id + ' opened.');
+			});
+		});
+	</script>
+
+{% endblock %}
